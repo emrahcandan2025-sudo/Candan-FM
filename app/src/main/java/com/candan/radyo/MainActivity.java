@@ -14,7 +14,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -42,6 +41,10 @@ public class MainActivity extends Activity {
 
     private SharedPreferences prefs;
     private final Set<String> favorites = new HashSet<>();
+
+    private final int RED = Color.rgb(218, 30, 40);
+    private final int DARK_RED = Color.rgb(180, 20, 30);
+    private final int SOFT_BG = Color.rgb(248, 248, 248);
 
     private final String[][] radios = {
 
@@ -90,19 +93,19 @@ public class MainActivity extends Activity {
                     "F"},
 
             {"Number1 FM",
-                    "https://n10101m.mediatriple.net/numberone",
+                    "http://20043.live.streamtheworld.com/NUMBER1FMAAC.aac",
                     "N"},
 
             {"Number1 Türk",
-                    "https://n10101m.mediatriple.net/numberoneturk",
+                    "http://19643.live.streamtheworld.com/NUMBER1TURK_FMAAC.aac",
                     "N"},
 
             {"Number1 Türk Slow",
-                    "https://n10101m.mediatriple.net/numberoneturkslow",
+                    "http://playerservices.streamtheworld.com/api/livestream-redirect/NUMBER1TURK_SLOWAAC.aac",
                     "N"},
 
             {"Number1 Türk 90'lar",
-                    "https://n10101m.mediatriple.net/numberoneturk90",
+                    "http://playerservices.streamtheworld.com/api/livestream-redirect/NUMBER1TURK_90LARAAC.aac",
                     "N"},
 
             {"Best FM",
@@ -137,13 +140,45 @@ public class MainActivity extends Activity {
                     "https://radio-trtradyo1.live.trt.com.tr/master.m3u8",
                     "T"},
 
+            {"TRT Radyo 3",
+                    "https://radio-trtradyo3.live.trt.com.tr/master.m3u8",
+                    "T"},
+
             {"TRT Türkü",
                     "https://radio-trtturku.live.trt.com.tr/master.m3u8",
                     "T"},
 
             {"TRT Nağme",
                     "https://radio-trtnagme.live.trt.com.tr/master.m3u8",
-                    "T"}
+                    "T"},
+
+            {"TRT Radyo Haber",
+                    "https://radio-trtradyohaber.live.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Antalya",
+                    "https://radio-trtantalya.live.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Çukurova",
+                    "https://radio-trtcukurova.live.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT GAP Diyarbakır",
+                    "https://radio-trtgap.live.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Erzurum",
+                    "https://radio-trterzurum.live.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Trabzon",
+                    "https://radio-trttrabzon.live.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"Memleketim FM",
+                    "https://radio-memleketimfm.live.trt.com.tr/master.m3u8",
+                    "M"}
     };
 
     @Override
@@ -206,7 +241,9 @@ public class MainActivity extends Activity {
         controllerFuture.addListener(() -> {
 
             try {
-                controller = controllerFuture.get();
+
+                controller =
+                        controllerFuture.get();
 
                 if (controller.getCurrentMediaItem() != null) {
 
@@ -222,7 +259,7 @@ public class MainActivity extends Activity {
                         );
 
                         liveText.setText(
-                                "●  CANLI YAYIN"
+                                "● CANLI YAYIN"
                         );
                     }
                 }
@@ -243,23 +280,27 @@ public class MainActivity extends Activity {
         );
 
         main.setBackgroundColor(
-                Color.rgb(244, 246, 249)
+                SOFT_BG
         );
 
         main.setPadding(
-                dp(16),
-                dp(18),
-                dp(16),
-                dp(18)
+                dp(12),
+                dp(12),
+                dp(12),
+                dp(16)
         );
 
 
         TextView title =
                 new TextView(this);
 
-        title.setText("📻  Candan Radyo");
+        title.setText(
+                "📻  CANDAN RADYO"
+        );
 
-        title.setTextSize(28);
+        title.setTextSize(
+                27
+        );
 
         title.setTypeface(
                 null,
@@ -267,65 +308,96 @@ public class MainActivity extends Activity {
         );
 
         title.setTextColor(
-                Color.rgb(17, 24, 39)
+                Color.WHITE
         );
 
         title.setGravity(
                 Gravity.CENTER
         );
 
-        main.addView(title);
-
-
-        LinearLayout playerCard =
-                new LinearLayout(this);
-
-        playerCard.setOrientation(
-                LinearLayout.VERTICAL
-        );
-
-        playerCard.setGravity(
-                Gravity.CENTER
-        );
-
-        playerCard.setPadding(
-                dp(16),
+        title.setPadding(
+                dp(10),
                 dp(14),
-                dp(16),
+                dp(10),
                 dp(14)
         );
 
-        GradientDrawable playerBg =
+
+        GradientDrawable titleBg =
                 new GradientDrawable();
 
-        playerBg.setColor(
-                Color.WHITE
+        titleBg.setColor(
+                RED
         );
 
-        playerBg.setCornerRadius(
+        titleBg.setCornerRadius(
                 dp(18)
         );
 
-        playerCard.setBackground(
-                playerBg
+        title.setBackground(
+                titleBg
+        );
+
+        main.addView(
+                title
         );
 
 
-        LinearLayout.LayoutParams playerParams =
+        LinearLayout nowPlaying =
+                new LinearLayout(this);
+
+        nowPlaying.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        nowPlaying.setGravity(
+                Gravity.CENTER
+        );
+
+        nowPlaying.setPadding(
+                dp(10),
+                dp(9),
+                dp(10),
+                dp(9)
+        );
+
+
+        GradientDrawable nowBg =
+                new GradientDrawable();
+
+        nowBg.setColor(
+                Color.WHITE
+        );
+
+        nowBg.setStroke(
+                dp(1),
+                RED
+        );
+
+        nowBg.setCornerRadius(
+                dp(14)
+        );
+
+        nowPlaying.setBackground(
+                nowBg
+        );
+
+
+        LinearLayout.LayoutParams nowParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-        playerParams.setMargins(
+        nowParams.setMargins(
                 0,
-                dp(14),
+                dp(8),
                 0,
-                dp(14)
+                dp(8)
         );
 
-        playerCard.setLayoutParams(
-                playerParams
+        nowPlaying.setLayoutParams(
+                nowParams
         );
 
 
@@ -337,7 +409,7 @@ public class MainActivity extends Activity {
         );
 
         stationText.setTextSize(
-                21
+                19
         );
 
         stationText.setTypeface(
@@ -346,14 +418,14 @@ public class MainActivity extends Activity {
         );
 
         stationText.setTextColor(
-                Color.rgb(31, 41, 55)
+                Color.rgb(35, 35, 35)
         );
 
         stationText.setGravity(
                 Gravity.CENTER
         );
 
-        playerCard.addView(
+        nowPlaying.addView(
                 stationText
         );
 
@@ -366,11 +438,11 @@ public class MainActivity extends Activity {
         );
 
         liveText.setTextSize(
-                14
+                13
         );
 
         liveText.setTextColor(
-                Color.rgb(220, 38, 38)
+                RED
         );
 
         liveText.setGravity(
@@ -379,17 +451,17 @@ public class MainActivity extends Activity {
 
         liveText.setPadding(
                 0,
-                dp(5),
+                dp(3),
                 0,
                 0
         );
 
-        playerCard.addView(
+        nowPlaying.addView(
                 liveText
         );
 
         main.addView(
-                playerCard
+                nowPlaying
         );
 
 
@@ -397,7 +469,7 @@ public class MainActivity extends Activity {
                 new EditText(this);
 
         search.setHint(
-                "Radyo ara..."
+                "🔎 Radyo ara..."
         );
 
         search.setTextSize(
@@ -409,11 +481,12 @@ public class MainActivity extends Activity {
         );
 
         search.setPadding(
-                dp(18),
+                dp(15),
                 0,
-                dp(18),
+                dp(15),
                 0
         );
+
 
         GradientDrawable searchBg =
                 new GradientDrawable();
@@ -422,13 +495,13 @@ public class MainActivity extends Activity {
                 Color.WHITE
         );
 
-        searchBg.setCornerRadius(
-                dp(16)
-        );
-
         searchBg.setStroke(
                 dp(1),
-                Color.rgb(225, 229, 235)
+                Color.rgb(220, 220, 220)
+        );
+
+        searchBg.setCornerRadius(
+                dp(12)
         );
 
         search.setBackground(
@@ -439,14 +512,14 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams searchParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(52)
+                        dp(48)
                 );
 
         searchParams.setMargins(
                 0,
                 0,
                 0,
-                dp(10)
+                dp(7)
         );
 
         search.setLayoutParams(
@@ -490,42 +563,43 @@ public class MainActivity extends Activity {
         );
 
 
-        Button stopButton =
-                new Button(this);
+        TextView stop =
+                new TextView(this);
 
-        stopButton.setText(
-                "■   YAYINI DURDUR"
+        stop.setText(
+                "■  YAYINI DURDUR"
         );
 
-        stopButton.setTextSize(
+        stop.setTextSize(
                 15
         );
 
-        stopButton.setTypeface(
+        stop.setTypeface(
                 null,
                 Typeface.BOLD
         );
 
-        stopButton.setTextColor(
+        stop.setTextColor(
                 Color.WHITE
         );
 
-        stopButton.setAllCaps(
-                false
+        stop.setGravity(
+                Gravity.CENTER
         );
+
 
         GradientDrawable stopBg =
                 new GradientDrawable();
 
         stopBg.setColor(
-                Color.rgb(31, 41, 55)
+                DARK_RED
         );
 
         stopBg.setCornerRadius(
-                dp(16)
+                dp(14)
         );
 
-        stopButton.setBackground(
+        stop.setBackground(
                 stopBg
         );
 
@@ -533,27 +607,26 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams stopParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(54)
+                        dp(50)
                 );
 
         stopParams.setMargins(
                 0,
-                dp(10),
+                dp(7),
                 0,
-                dp(14)
+                dp(12)
         );
 
-        stopButton.setLayoutParams(
+        stop.setLayoutParams(
                 stopParams
         );
 
 
-        stopButton.setOnClickListener(v -> {
+        stop.setOnClickListener(v -> {
 
             if (controller != null) {
 
                 controller.stop();
-
                 controller.clearMediaItems();
 
                 stationText.setText(
@@ -563,11 +636,15 @@ public class MainActivity extends Activity {
                 liveText.setText(
                         "Hazır"
                 );
+
+                showRadios(
+                        search.getText().toString()
+                );
             }
         });
 
         main.addView(
-                stopButton
+                stop
         );
 
         showRadios("");
@@ -644,6 +721,26 @@ public class MainActivity extends Activity {
             String url,
             String letter) {
 
+        boolean isCurrent = false;
+
+        if (controller != null &&
+                controller.getCurrentMediaItem() != null &&
+                controller
+                        .getCurrentMediaItem()
+                        .mediaMetadata
+                        .title != null) {
+
+            isCurrent =
+                    name.equals(
+                            controller
+                                    .getCurrentMediaItem()
+                                    .mediaMetadata
+                                    .title
+                                    .toString()
+                    );
+        }
+
+
         LinearLayout row =
                 new LinearLayout(this);
 
@@ -656,10 +753,10 @@ public class MainActivity extends Activity {
         );
 
         row.setPadding(
-                dp(12),
-                dp(8),
-                dp(8),
-                dp(8)
+                dp(7),
+                dp(5),
+                dp(5),
+                dp(5)
         );
 
 
@@ -670,8 +767,19 @@ public class MainActivity extends Activity {
                 Color.WHITE
         );
 
+        rowBg.setStroke(
+                dp(isCurrent ? 2 : 1),
+                isCurrent
+                        ? RED
+                        : Color.rgb(
+                                225,
+                                225,
+                                225
+                        )
+        );
+
         rowBg.setCornerRadius(
-                dp(15)
+                dp(8)
         );
 
         row.setBackground(
@@ -682,14 +790,14 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams rowParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(68)
+                        dp(58)
                 );
 
         rowParams.setMargins(
                 0,
-                dp(4),
+                dp(2),
                 0,
-                dp(4)
+                dp(2)
         );
 
         row.setLayoutParams(
@@ -705,7 +813,7 @@ public class MainActivity extends Activity {
         );
 
         logo.setTextSize(
-                19
+                18
         );
 
         logo.setTypeface(
@@ -714,7 +822,7 @@ public class MainActivity extends Activity {
         );
 
         logo.setTextColor(
-                Color.WHITE
+                RED
         );
 
         logo.setGravity(
@@ -726,11 +834,16 @@ public class MainActivity extends Activity {
                 new GradientDrawable();
 
         logoBg.setColor(
-                Color.rgb(220, 38, 38)
+                Color.WHITE
+        );
+
+        logoBg.setStroke(
+                dp(2),
+                RED
         );
 
         logoBg.setCornerRadius(
-                dp(12)
+                dp(7)
         );
 
         logo.setBackground(
@@ -740,12 +853,43 @@ public class MainActivity extends Activity {
 
         LinearLayout.LayoutParams logoParams =
                 new LinearLayout.LayoutParams(
-                        dp(46),
-                        dp(46)
+                        dp(43),
+                        dp(43)
                 );
 
         logo.setLayoutParams(
                 logoParams
+        );
+
+
+        LinearLayout center =
+                new LinearLayout(this);
+
+        center.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        center.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
+
+
+        LinearLayout.LayoutParams centerParams =
+                new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1
+                );
+
+        centerParams.setMargins(
+                dp(12),
+                0,
+                dp(5),
+                0
+        );
+
+        center.setLayoutParams(
+                centerParams
         );
 
 
@@ -760,32 +904,49 @@ public class MainActivity extends Activity {
                 17
         );
 
+        nameText.setTypeface(
+                null,
+                isCurrent
+                        ? Typeface.BOLD
+                        : Typeface.NORMAL
+        );
+
         nameText.setTextColor(
-                Color.rgb(31, 41, 55)
+                isCurrent
+                        ? RED
+                        : Color.rgb(
+                                45,
+                                45,
+                                45
+                        )
         );
 
-        nameText.setGravity(
-                Gravity.CENTER_VERTICAL
-        );
-
-        nameText.setPadding(
-                dp(14),
-                0,
-                dp(5),
-                0
+        center.addView(
+                nameText
         );
 
 
-        LinearLayout.LayoutParams nameParams =
-                new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        1
-                );
+        if (isCurrent) {
 
-        nameText.setLayoutParams(
-                nameParams
-        );
+            TextView playing =
+                    new TextView(this);
+
+            playing.setText(
+                    "● CANLI"
+            );
+
+            playing.setTextSize(
+                    10
+            );
+
+            playing.setTextColor(
+                    RED
+            );
+
+            center.addView(
+                    playing
+            );
+        }
 
 
         TextView star =
@@ -798,24 +959,40 @@ public class MainActivity extends Activity {
         );
 
         star.setTextSize(
-                30
+                26
+        );
+
+        star.setTextColor(
+                Color.WHITE
         );
 
         star.setGravity(
                 Gravity.CENTER
         );
 
-        star.setTextColor(
+
+        GradientDrawable starBg =
+                new GradientDrawable();
+
+        starBg.setColor(
                 favorites.contains(name)
-                        ? Color.rgb(245, 158, 11)
-                        : Color.rgb(156, 163, 175)
+                        ? DARK_RED
+                        : RED
+        );
+
+        starBg.setCornerRadius(
+                dp(6)
+        );
+
+        star.setBackground(
+                starBg
         );
 
 
         LinearLayout.LayoutParams starParams =
                 new LinearLayout.LayoutParams(
-                        dp(52),
-                        dp(52)
+                        dp(49),
+                        dp(46)
                 );
 
         star.setLayoutParams(
@@ -828,30 +1005,12 @@ public class MainActivity extends Activity {
             if (favorites.contains(name)) {
 
                 favorites.remove(name);
-
                 star.setText("☆");
-
-                star.setTextColor(
-                        Color.rgb(
-                                156,
-                                163,
-                                175
-                        )
-                );
 
             } else {
 
                 favorites.add(name);
-
                 star.setText("★");
-
-                star.setTextColor(
-                        Color.rgb(
-                                245,
-                                158,
-                                11
-                        )
-                );
             }
 
             prefs.edit()
@@ -879,7 +1038,7 @@ public class MainActivity extends Activity {
                 play
         );
 
-        nameText.setOnClickListener(
+        center.setOnClickListener(
                 play
         );
 
@@ -889,7 +1048,7 @@ public class MainActivity extends Activity {
         );
 
         row.addView(
-                nameText
+                center
         );
 
         row.addView(
@@ -916,7 +1075,9 @@ public class MainActivity extends Activity {
 
         MediaMetadata metadata =
                 new MediaMetadata.Builder()
-                        .setTitle(name)
+                        .setTitle(
+                                name
+                        )
                         .setArtist(
                                 "Candan Radyo"
                         )
@@ -924,14 +1085,15 @@ public class MainActivity extends Activity {
 
         MediaItem item =
                 new MediaItem.Builder()
-                        .setUri(url)
+                        .setUri(
+                                url
+                        )
                         .setMediaMetadata(
                                 metadata
                         )
                         .build();
 
         controller.stop();
-
         controller.clearMediaItems();
 
         controller.setMediaItem(
@@ -939,7 +1101,6 @@ public class MainActivity extends Activity {
         );
 
         controller.prepare();
-
         controller.play();
 
         stationText.setText(
@@ -947,17 +1108,20 @@ public class MainActivity extends Activity {
         );
 
         liveText.setText(
-                "●  CANLI YAYIN"
+                "● CANLI YAYIN"
         );
+
+        showRadios("");
     }
 
-    private int dp(int value) {
+    private int dp(
+            int value) {
 
         return (int) (
                 value *
-                getResources()
-                        .getDisplayMetrics()
-                        .density
+                        getResources()
+                                .getDisplayMetrics()
+                                .density
         );
     }
 
@@ -973,4 +1137,4 @@ public class MainActivity extends Activity {
 
         super.onDestroy();
     }
-    }
+}
