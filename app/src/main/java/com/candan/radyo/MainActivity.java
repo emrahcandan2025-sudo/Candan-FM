@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
                     "K"},
 
             {"Kral FM",
-                    "https://dygedge.radyotvonline.net/kralfm/playlist.m3u8",
+                    "https://dygedge2.radyotvonline.net/kralfm/playlist.m3u8",
                     "K"},
 
             {"PowerTürk",
@@ -81,104 +81,52 @@ public class MainActivity extends Activity {
                     "P"},
 
             {"Power FM",
-                    "https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio",
+                    "https://listen.powerapp.com.tr/powerfm/256/chunks.m3u8",
                     "P"},
 
             {"Radyo Fenomen",
-                    "https://listen.radyofenomen.com/fenomen/128/icecast.audio",
+                    "https://live.radyofenomen.com/fenomen/256/icecast.audio",
                     "F"},
-
-            {"Fenomen Türk",
-                    "https://listen.radyofenomen.com/fenomenturk/128/icecast.audio",
-                    "F"},
-
-            {"Number1 FM",
-                    "http://20043.live.streamtheworld.com/NUMBER1FMAAC.aac",
-                    "N"},
-
-            {"Number1 Türk",
-                    "http://19643.live.streamtheworld.com/NUMBER1TURK_FMAAC.aac",
-                    "N"},
-
-            {"Number1 Türk Slow",
-                    "http://playerservices.streamtheworld.com/api/livestream-redirect/NUMBER1TURK_SLOWAAC.aac",
-                    "N"},
-
-            {"Number1 Türk 90'lar",
-                    "http://playerservices.streamtheworld.com/api/livestream-redirect/NUMBER1TURK_90LARAAC.aac",
-                    "N"},
 
             {"Best FM",
-                    "https://bestfm.turkhosted.com/stream",
+                    "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
                     "B"},
 
             {"Alem FM",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/ALEM_FM128AAC_SC",
+                    "https://turkmedya.radyotvonline.net/alemfmaac",
                     "A"},
 
             {"Radyo D",
-                    "https://moondigitaledge.radyotvonline.net/radyod/playlist.m3u8",
+                    "https://moondigitaledge2.radyotvonline.net/radyod/playlist.m3u8",
                     "D"},
 
             {"SlowTürk",
                     "https://radyo.duhnet.tv/slowturk",
                     "S"},
 
-            {"Pal Nostalji",
-                    "https://shoutcast.radyogrup.com:1020/stream",
+            {"PAL Station",
+                    "http://shoutcast.radyogrup.com:1020/",
                     "P"},
 
-            {"Pal Station",
-                    "https://shoutcast.radyogrup.com:1010/stream",
+            {"PAL FM",
+                    "http://shoutcast.radyogrup.com:1030/",
                     "P"},
 
-            {"TRT FM",
-                    "https://radio-trtfm.live.trt.com.tr/master.m3u8",
-                    "T"},
+            {"Kafa Radyo",
+                    "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8",
+                    "K"},
 
-            {"TRT Radyo 1",
-                    "https://radio-trtradyo1.live.trt.com.tr/master.m3u8",
-                    "T"},
+            {"Show Radyo",
+                    "http://46.20.3.229/",
+                    "S"},
 
-            {"TRT Radyo 3",
-                    "https://radio-trtradyo3.live.trt.com.tr/master.m3u8",
-                    "T"},
+            {"Radyo Viva",
+                    "http://46.20.3.231/",
+                    "V"},
 
-            {"TRT Türkü",
-                    "https://radio-trtturku.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Nağme",
-                    "https://radio-trtnagme.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Radyo Haber",
-                    "https://radio-trtradyohaber.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Antalya",
-                    "https://radio-trtantalya.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Çukurova",
-                    "https://radio-trtcukurova.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT GAP Diyarbakır",
-                    "https://radio-trtgap.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Erzurum",
-                    "https://radio-trterzurum.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Trabzon",
-                    "https://radio-trttrabzon.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"Memleketim FM",
-                    "https://radio-memleketimfm.live.trt.com.tr/master.m3u8",
-                    "M"}
+            {"Radyo 45lik",
+                    "https://stream.radyo45lik.com:4545/",
+                    "4"}
     };
 
     @Override
