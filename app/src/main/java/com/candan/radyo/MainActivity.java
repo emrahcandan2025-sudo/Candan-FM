@@ -3,12 +3,17 @@ package com.candan.radyo;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -32,9 +37,10 @@ public class MainActivity extends Activity {
     private MediaController controller;
 
     private TextView stationText;
-    private TextView statusText;
+    private TextView liveText;
     private LinearLayout radioList;
 
+    private SharedPreferences prefs;
     private final Set<String> favorites = new HashSet<>();
 
     private final String[][] radios = {
@@ -144,27 +150,36 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestNotificationPermission();
+        prefs = getSharedPreferences(
+                "candan_radyo",
+                MODE_PRIVATE
+        );
 
+        favorites.addAll(
+                prefs.getStringSet(
+                        "favorites",
+                        new HashSet<>()
+                )
+        );
+
+        requestNotificationPermission();
         createController();
         createInterface();
     }
 
     private void requestNotificationPermission() {
 
-        if (Build.VERSION.SDK_INT >= 33) {
+        if (Build.VERSION.SDK_INT >= 33 &&
+                checkSelfPermission(
+                        Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
 
-            if (checkSelfPermission(
-                    Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                requestPermissions(
-                        new String[]{
-                                Manifest.permission.POST_NOTIFICATIONS
-                        },
-                        100
-                );
-            }
+            requestPermissions(
+                    new String[]{
+                            Manifest.permission.POST_NOTIFICATIONS
+                    },
+                    100
+            );
         }
     }
 
@@ -191,8 +206,26 @@ public class MainActivity extends Activity {
         controllerFuture.addListener(() -> {
 
             try {
-
                 controller = controllerFuture.get();
+
+                if (controller.getCurrentMediaItem() != null) {
+
+                    MediaMetadata metadata =
+                            controller
+                                    .getCurrentMediaItem()
+                                    .mediaMetadata;
+
+                    if (metadata.title != null) {
+
+                        stationText.setText(
+                                metadata.title.toString()
+                        );
+
+                        liveText.setText(
+                                "●  CANLI YAYIN"
+                        );
+                    }
+                }
 
             } catch (Exception ignored) {
             }
@@ -206,125 +239,341 @@ public class MainActivity extends Activity {
                 new LinearLayout(this);
 
         main.setOrientation(
-                LinearLayout.VERTICAL);
+                LinearLayout.VERTICAL
+        );
 
         main.setBackgroundColor(
-                Color.rgb(245, 246, 248));
+                Color.rgb(244, 246, 249)
+        );
 
         main.setPadding(
-                20, 30, 20, 40);
+                dp(16),
+                dp(18),
+                dp(16),
+                dp(18)
+        );
 
 
         TextView title =
                 new TextView(this);
 
-        title.setText("📻 Candan Radyo");
+        title.setText("📻  Candan Radyo");
+
         title.setTextSize(28);
+
         title.setTypeface(
                 null,
-                Typeface.BOLD);
-
-        title.setGravity(Gravity.CENTER);
+                Typeface.BOLD
+        );
 
         title.setTextColor(
-                Color.rgb(17, 24, 39));
+                Color.rgb(17, 24, 39)
+        );
 
-        title.setPadding(
-                0, 10, 0, 10);
+        title.setGravity(
+                Gravity.CENTER
+        );
 
         main.addView(title);
+
+
+        LinearLayout playerCard =
+                new LinearLayout(this);
+
+        playerCard.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        playerCard.setGravity(
+                Gravity.CENTER
+        );
+
+        playerCard.setPadding(
+                dp(16),
+                dp(14),
+                dp(16),
+                dp(14)
+        );
+
+        GradientDrawable playerBg =
+                new GradientDrawable();
+
+        playerBg.setColor(
+                Color.WHITE
+        );
+
+        playerBg.setCornerRadius(
+                dp(18)
+        );
+
+        playerCard.setBackground(
+                playerBg
+        );
+
+
+        LinearLayout.LayoutParams playerParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        playerParams.setMargins(
+                0,
+                dp(14),
+                0,
+                dp(14)
+        );
+
+        playerCard.setLayoutParams(
+                playerParams
+        );
 
 
         stationText =
                 new TextView(this);
 
-        stationText.setText("Radyo seç");
-        stationText.setTextSize(18);
+        stationText.setText(
+                "Bir radyo seç"
+        );
+
+        stationText.setTextSize(
+                21
+        );
 
         stationText.setTypeface(
                 null,
-                Typeface.BOLD);
+                Typeface.BOLD
+        );
+
+        stationText.setTextColor(
+                Color.rgb(31, 41, 55)
+        );
 
         stationText.setGravity(
-                Gravity.CENTER);
+                Gravity.CENTER
+        );
 
-        main.addView(stationText);
+        playerCard.addView(
+                stationText
+        );
 
 
-        statusText =
+        liveText =
                 new TextView(this);
 
-        statusText.setText("Hazır");
-        statusText.setTextSize(14);
+        liveText.setText(
+                "Hazır"
+        );
 
-        statusText.setGravity(
-                Gravity.CENTER);
+        liveText.setTextSize(
+                14
+        );
 
-        statusText.setPadding(
-                0, 5, 0, 15);
+        liveText.setTextColor(
+                Color.rgb(220, 38, 38)
+        );
 
-        main.addView(statusText);
+        liveText.setGravity(
+                Gravity.CENTER
+        );
+
+        liveText.setPadding(
+                0,
+                dp(5),
+                0,
+                0
+        );
+
+        playerCard.addView(
+                liveText
+        );
+
+        main.addView(
+                playerCard
+        );
 
 
         EditText search =
                 new EditText(this);
 
-        search.setHint("🔎 Radyo ara...");
-        search.setSingleLine(true);
+        search.setHint(
+                "Radyo ara..."
+        );
 
-        main.addView(search);
+        search.setTextSize(
+                16
+        );
+
+        search.setSingleLine(
+                true
+        );
+
+        search.setPadding(
+                dp(18),
+                0,
+                dp(18),
+                0
+        );
+
+        GradientDrawable searchBg =
+                new GradientDrawable();
+
+        searchBg.setColor(
+                Color.WHITE
+        );
+
+        searchBg.setCornerRadius(
+                dp(16)
+        );
+
+        searchBg.setStroke(
+                dp(1),
+                Color.rgb(225, 229, 235)
+        );
+
+        search.setBackground(
+                searchBg
+        );
+
+
+        LinearLayout.LayoutParams searchParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        dp(52)
+                );
+
+        searchParams.setMargins(
+                0,
+                0,
+                0,
+                dp(10)
+        );
+
+        search.setLayoutParams(
+                searchParams
+        );
+
+        main.addView(
+                search
+        );
 
 
         ScrollView scroll =
                 new ScrollView(this);
 
+        scroll.setFillViewport(
+                true
+        );
+
         radioList =
                 new LinearLayout(this);
 
         radioList.setOrientation(
-                LinearLayout.VERTICAL);
+                LinearLayout.VERTICAL
+        );
 
-        scroll.addView(radioList);
+        scroll.addView(
+                radioList
+        );
 
 
-        LinearLayout.LayoutParams sp =
+        LinearLayout.LayoutParams scrollParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         0,
                         1
                 );
 
-        main.addView(scroll, sp);
+        main.addView(
+                scroll,
+                scrollParams
+        );
 
 
-        Button stop =
+        Button stopButton =
                 new Button(this);
 
-        stop.setText("■ Yayını Durdur");
-        stop.setTextSize(16);
-        stop.setAllCaps(false);
+        stopButton.setText(
+                "■   YAYINI DURDUR"
+        );
 
-        stop.setOnClickListener(v -> {
+        stopButton.setTextSize(
+                15
+        );
+
+        stopButton.setTypeface(
+                null,
+                Typeface.BOLD
+        );
+
+        stopButton.setTextColor(
+                Color.WHITE
+        );
+
+        stopButton.setAllCaps(
+                false
+        );
+
+        GradientDrawable stopBg =
+                new GradientDrawable();
+
+        stopBg.setColor(
+                Color.rgb(31, 41, 55)
+        );
+
+        stopBg.setCornerRadius(
+                dp(16)
+        );
+
+        stopButton.setBackground(
+                stopBg
+        );
+
+
+        LinearLayout.LayoutParams stopParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        dp(54)
+                );
+
+        stopParams.setMargins(
+                0,
+                dp(10),
+                0,
+                dp(14)
+        );
+
+        stopButton.setLayoutParams(
+                stopParams
+        );
+
+
+        stopButton.setOnClickListener(v -> {
 
             if (controller != null) {
 
                 controller.stop();
+
                 controller.clearMediaItems();
 
                 stationText.setText(
-                        "Radyo seç");
+                        "Bir radyo seç"
+                );
 
-                statusText.setText(
-                        "Hazır");
+                liveText.setText(
+                        "Hazır"
+                );
             }
         });
 
-        main.addView(stop);
+        main.addView(
+                stopButton
+        );
 
         showRadios("");
 
         search.addTextChangedListener(
-                new android.text.TextWatcher() {
+                new TextWatcher() {
 
                     @Override
                     public void beforeTextChanged(
@@ -342,20 +591,24 @@ public class MainActivity extends Activity {
                             int count) {
 
                         showRadios(
-                                s.toString());
+                                s.toString()
+                        );
                     }
 
                     @Override
                     public void afterTextChanged(
-                            android.text.Editable s) {
+                            Editable s) {
                     }
                 }
         );
 
-        setContentView(main);
+        setContentView(
+                main
+        );
     }
 
-    private void showRadios(String filter) {
+    private void showRadios(
+            String filter) {
 
         radioList.removeAllViews();
 
@@ -366,24 +619,27 @@ public class MainActivity extends Activity {
 
         for (String[] radio : radios) {
 
-            String name = radio[0];
+            String name =
+                    radio[0];
 
-            if (!name
-                    .toLowerCase()
-                    .replace("ı", "i")
-                    .contains(f)) {
+            String searchable =
+                    name
+                            .toLowerCase()
+                            .replace("ı", "i");
 
+            if (!searchable.contains(f)) {
                 continue;
             }
 
-            createRow(
+            createRadioRow(
                     radio[0],
                     radio[1],
-                    radio[2]);
+                    radio[2]
+            );
         }
     }
 
-    private void createRow(
+    private void createRadioRow(
             String name,
             String url,
             String letter) {
@@ -392,92 +648,179 @@ public class MainActivity extends Activity {
                 new LinearLayout(this);
 
         row.setOrientation(
-                LinearLayout.HORIZONTAL);
+                LinearLayout.HORIZONTAL
+        );
 
         row.setGravity(
-                Gravity.CENTER_VERTICAL);
+                Gravity.CENTER_VERTICAL
+        );
 
         row.setPadding(
-                15, 10, 10, 10);
+                dp(12),
+                dp(8),
+                dp(8),
+                dp(8)
+        );
 
-        row.setBackgroundColor(
-                Color.WHITE);
+
+        GradientDrawable rowBg =
+                new GradientDrawable();
+
+        rowBg.setColor(
+                Color.WHITE
+        );
+
+        rowBg.setCornerRadius(
+                dp(15)
+        );
+
+        row.setBackground(
+                rowBg
+        );
 
 
-        LinearLayout.LayoutParams rp =
+        LinearLayout.LayoutParams rowParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        110
+                        dp(68)
                 );
 
-        rp.setMargins(
-                0, 5, 0, 5);
+        rowParams.setMargins(
+                0,
+                dp(4),
+                0,
+                dp(4)
+        );
 
-        row.setLayoutParams(rp);
+        row.setLayoutParams(
+                rowParams
+        );
 
 
         TextView logo =
                 new TextView(this);
 
-        logo.setText(letter);
-        logo.setTextSize(21);
+        logo.setText(
+                letter
+        );
+
+        logo.setTextSize(
+                19
+        );
 
         logo.setTypeface(
                 null,
-                Typeface.BOLD);
+                Typeface.BOLD
+        );
 
         logo.setTextColor(
-                Color.WHITE);
+                Color.WHITE
+        );
 
         logo.setGravity(
-                Gravity.CENTER);
-
-        logo.setBackgroundColor(
-                Color.rgb(220, 38, 38));
+                Gravity.CENTER
+        );
 
 
-        LinearLayout.LayoutParams lp =
+        GradientDrawable logoBg =
+                new GradientDrawable();
+
+        logoBg.setColor(
+                Color.rgb(220, 38, 38)
+        );
+
+        logoBg.setCornerRadius(
+                dp(12)
+        );
+
+        logo.setBackground(
+                logoBg
+        );
+
+
+        LinearLayout.LayoutParams logoParams =
                 new LinearLayout.LayoutParams(
-                        72, 72);
+                        dp(46),
+                        dp(46)
+                );
 
-        logo.setLayoutParams(lp);
+        logo.setLayoutParams(
+                logoParams
+        );
 
 
         TextView nameText =
                 new TextView(this);
 
-        nameText.setText(name);
-        nameText.setTextSize(18);
+        nameText.setText(
+                name
+        );
+
+        nameText.setTextSize(
+                17
+        );
+
+        nameText.setTextColor(
+                Color.rgb(31, 41, 55)
+        );
+
+        nameText.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
 
         nameText.setPadding(
-                20, 0, 5, 0);
+                dp(14),
+                0,
+                dp(5),
+                0
+        );
 
 
-        LinearLayout.LayoutParams np =
+        LinearLayout.LayoutParams nameParams =
                 new LinearLayout.LayoutParams(
                         0,
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         1
                 );
 
-        nameText.setLayoutParams(np);
+        nameText.setLayoutParams(
+                nameParams
+        );
 
-        nameText.setGravity(
-                Gravity.CENTER_VERTICAL);
 
-
-        Button star =
-                new Button(this);
+        TextView star =
+                new TextView(this);
 
         star.setText(
                 favorites.contains(name)
                         ? "★"
-                        : "☆");
+                        : "☆"
+        );
 
-        star.setTextSize(27);
+        star.setTextSize(
+                30
+        );
 
-        star.setBackgroundColor(
-                Color.TRANSPARENT);
+        star.setGravity(
+                Gravity.CENTER
+        );
+
+        star.setTextColor(
+                favorites.contains(name)
+                        ? Color.rgb(245, 158, 11)
+                        : Color.rgb(156, 163, 175)
+        );
+
+
+        LinearLayout.LayoutParams starParams =
+                new LinearLayout.LayoutParams(
+                        dp(52),
+                        dp(52)
+                );
+
+        star.setLayoutParams(
+                starParams
+        );
 
 
         star.setOnClickListener(v -> {
@@ -488,38 +831,74 @@ public class MainActivity extends Activity {
 
                 star.setText("☆");
 
+                star.setTextColor(
+                        Color.rgb(
+                                156,
+                                163,
+                                175
+                        )
+                );
+
             } else {
 
                 favorites.add(name);
 
                 star.setText("★");
+
+                star.setTextColor(
+                        Color.rgb(
+                                245,
+                                158,
+                                11
+                        )
+                );
             }
+
+            prefs.edit()
+                    .putStringSet(
+                            "favorites",
+                            new HashSet<>(
+                                    favorites
+                            )
+                    )
+                    .apply();
         });
 
 
-        row.setOnClickListener(v ->
-                playStation(
+        View.OnClickListener play =
+                v -> playStation(
                         name,
-                        url));
+                        url
+                );
+
+        row.setOnClickListener(
+                play
+        );
+
+        logo.setOnClickListener(
+                play
+        );
+
+        nameText.setOnClickListener(
+                play
+        );
 
 
-        logo.setOnClickListener(v ->
-                playStation(
-                        name,
-                        url));
+        row.addView(
+                logo
+        );
 
+        row.addView(
+                nameText
+        );
 
-        nameText.setOnClickListener(v ->
-                playStation(
-                        name,
-                        url));
+        row.addView(
+                star
+        );
 
-
-        row.addView(logo);
-        row.addView(nameText);
-        row.addView(star);
-
-        radioList.addView(row);
+        radioList.addView(
+                row
+        );
     }
 
     private void playStation(
@@ -528,8 +907,9 @@ public class MainActivity extends Activity {
 
         if (controller == null) {
 
-            statusText.setText(
-                    "Oynatıcı hazırlanıyor...");
+            liveText.setText(
+                    "Oynatıcı hazırlanıyor..."
+            );
 
             return;
         }
@@ -537,46 +917,60 @@ public class MainActivity extends Activity {
         MediaMetadata metadata =
                 new MediaMetadata.Builder()
                         .setTitle(name)
-                        .setArtist("Candan Radyo")
+                        .setArtist(
+                                "Candan Radyo"
+                        )
                         .build();
 
         MediaItem item =
                 new MediaItem.Builder()
                         .setUri(url)
-                        .setMediaMetadata(metadata)
+                        .setMediaMetadata(
+                                metadata
+                        )
                         .build();
 
         controller.stop();
+
         controller.clearMediaItems();
 
-        controller.setMediaItem(item);
+        controller.setMediaItem(
+                item
+        );
 
         controller.prepare();
+
         controller.play();
 
-        stationText.setText(name);
+        stationText.setText(
+                name
+        );
 
-        statusText.setText(
-                "🔴 CANLI");
+        liveText.setText(
+                "●  CANLI YAYIN"
+        );
+    }
+
+    private int dp(int value) {
+
+        return (int) (
+                value *
+                getResources()
+                        .getDisplayMetrics()
+                        .density
+        );
     }
 
     @Override
     protected void onDestroy() {
 
-        /*
-         * ÖNEMLİ:
-         * Burada radyoyu durdurmuyoruz.
-         *
-         * Activity kapansa bile RadioService
-         * yayını sürdürmeye devam edecek.
-         */
-
         if (controllerFuture != null) {
 
             MediaController.releaseFuture(
-                    controllerFuture);
+                    controllerFuture
+            );
         }
 
         super.onDestroy();
     }
-}
+    }
