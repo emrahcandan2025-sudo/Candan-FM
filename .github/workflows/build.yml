@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Signed APK
 
 on:
   workflow_dispatch:
@@ -23,11 +23,24 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Debug APK
-        run: gradle assembleDebug
+      - name: Restore keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > candan-radio.jks
+
+      - name: Build signed APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          gradle assembleRelease \
+            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/candan-radio.jks \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Candan-Radyo
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: Candan-Radyo-Signed
+          path: app/build/outputs/apk/release/app-release.apk
