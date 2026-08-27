@@ -33,19 +33,13 @@ public class RadioService extends MediaSessionService {
                         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                         .build();
 
-        player =
-                new ExoPlayer.Builder(this)
-                        .build();
+        player = new ExoPlayer.Builder(this).build();
 
         player.setAudioAttributes(
                 audioAttributes,
                 true
         );
 
-        /*
-         * Arka planda CPU ve ağ bağlantısının
-         * uykuya geçmesini engeller.
-         */
         player.setWakeMode(
                 C.WAKE_MODE_NETWORK
         );
@@ -61,11 +55,9 @@ public class RadioService extends MediaSessionService {
 
                     @Override
                     public void onPlaybackStateChanged(
-                            int playbackState) {
+                            int state) {
 
-                        if (playbackState ==
-                                Player.STATE_READY) {
-
+                        if (state == Player.STATE_READY) {
                             retryCount = 0;
                         }
                     }
@@ -76,7 +68,6 @@ public class RadioService extends MediaSessionService {
 
                         if (player == null ||
                                 player.getCurrentMediaItem() == null) {
-
                             return;
                         }
 
@@ -98,12 +89,10 @@ public class RadioService extends MediaSessionService {
 
         if (player == null ||
                 player.getCurrentMediaItem() == null) {
-
             return;
         }
 
         try {
-
             player.prepare();
             player.play();
 
@@ -122,78 +111,12 @@ public class RadioService extends MediaSessionService {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
 
-        /*
-         * Uygulama arka plana atılsa veya
-         * son uygulamalardan kaldırılsa bile
-         * radyo çalıyorsa servisi kapatma.
-         */
-
         if (player != null &&
                 player.isPlaying()) {
-
             return;
         }
 
         super.onTaskRemoved(rootIntent);
-    }
-
-    @Override
-    public void onDestroy() {
-
-        handler.removeCallbacksAndMessages(null);
-
-        if (mediaSession != null) {
-
-            mediaSession.release();
-            mediaSession = null;
-        }
-
-        if (player != null) {
-
-            player.release();
-            player = null;
-        }
-
-        super.onDestroy();
-    }
-}
-                if (state == Player.STATE_READY) {
-                    retryCount = 0;
-                }
-            }
-
-            @Override
-            public void onPlayerError(PlaybackException error) {
-
-                if (player.getCurrentMediaItem() == null) {
-                    return;
-                }
-
-                if (retryCount < 5) {
-
-                    retryCount++;
-
-                    handler.postDelayed(() -> {
-
-                        if (player != null &&
-                                player.getCurrentMediaItem() != null) {
-
-                            player.prepare();
-                            player.play();
-                        }
-
-                    }, 2000);
-                }
-            }
-        });
-    }
-
-    @Nullable
-    @Override
-    public MediaSession onGetSession(
-            MediaSession.ControllerInfo controllerInfo) {
-
-        return mediaSession;
     }
 
     @Override
