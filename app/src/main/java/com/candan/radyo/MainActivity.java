@@ -288,7 +288,7 @@ public class MainActivity extends Activity {
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
-        miniParams.setMargins(0, dp(7), 0, dp(18));
+        miniParams.setMargins(0, dp(7), 0, dp(34));
         miniPlayer.setLayoutParams(miniParams);
 
         stationText = new TextView(this);
