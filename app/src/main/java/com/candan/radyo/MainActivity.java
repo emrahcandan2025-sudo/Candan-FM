@@ -6,6 +6,8 @@ import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -18,6 +20,8 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -33,6 +37,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ConcurrentHashMap;
+import java.net.URL;
 
 public class MainActivity extends Activity {
 
@@ -60,6 +66,7 @@ public class MainActivity extends Activity {
 
     private SharedPreferences prefs;
     private final Set<String> favorites = new HashSet<>();
+    private final ConcurrentHashMap<String, Bitmap> logoCache = new ConcurrentHashMap<>();
 
     private final int RED = Color.rgb(218, 30, 40);
     private final int DARK_RED = Color.rgb(180, 20, 30);
@@ -288,7 +295,7 @@ public class MainActivity extends Activity {
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
-        miniParams.setMargins(0, dp(7), 0, dp(34));
+        miniParams.setMargins(0, dp(7), 0, dp(44));
         miniPlayer.setLayoutParams(miniParams);
 
         stationText = new TextView(this);
@@ -514,62 +521,38 @@ public class MainActivity extends Activity {
         );
 
 
-        TextView logo =
-                new TextView(this);
+        FrameLayout logoBox = new FrameLayout(this);
 
-        logo.setText(
-                letter
-        );
-
-        logo.setTextSize(
-                18
-        );
-
-        logo.setTypeface(
-                null,
-                Typeface.BOLD
-        );
-
-        logo.setTextColor(
-                RED
-        );
-
-        logo.setGravity(
-                Gravity.CENTER
-        );
-
-
-        GradientDrawable logoBg =
-                new GradientDrawable();
-
-        logoBg.setColor(
-                Color.WHITE
-        );
-
-        logoBg.setStroke(
-                dp(2),
-                RED
-        );
-
-        logoBg.setCornerRadius(
-                dp(7)
-        );
-
-        logo.setBackground(
-                logoBg
-        );
-
+        GradientDrawable logoBoxBg = new GradientDrawable();
+        logoBoxBg.setColor(Color.WHITE);
+        logoBoxBg.setStroke(dp(2), RED);
+        logoBoxBg.setCornerRadius(dp(7));
+        logoBox.setBackground(logoBoxBg);
 
         LinearLayout.LayoutParams logoParams =
-                new LinearLayout.LayoutParams(
-                        dp(43),
-                        dp(43)
-                );
+                new LinearLayout.LayoutParams(dp(43), dp(43));
+        logoBox.setLayoutParams(logoParams);
 
-        logo.setLayoutParams(
-                logoParams
-        );
+        TextView logoFallback = new TextView(this);
+        logoFallback.setText(letter);
+        logoFallback.setTextSize(18);
+        logoFallback.setTypeface(null, Typeface.BOLD);
+        logoFallback.setTextColor(RED);
+        logoFallback.setGravity(Gravity.CENTER);
 
+        FrameLayout.LayoutParams fill =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT);
+
+        logoBox.addView(logoFallback, fill);
+
+        ImageView logoImage = new ImageView(this);
+        logoImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        logoImage.setPadding(dp(3), dp(3), dp(3), dp(3));
+        logoBox.addView(logoImage, fill);
+
+        loadStationLogo(name, logoImage);
 
         LinearLayout center =
                 new LinearLayout(this);
@@ -743,7 +726,7 @@ public class MainActivity extends Activity {
                 play
         );
 
-        logo.setOnClickListener(
+        logoBox.setOnClickListener(
                 play
         );
 
@@ -753,7 +736,7 @@ public class MainActivity extends Activity {
 
 
         row.addView(
-                logo
+                logoBox
         );
 
         row.addView(
@@ -885,6 +868,81 @@ public class MainActivity extends Activity {
                 java.util.Locale.getDefault(),
                 "  •  %02d:%02d:%02d",
                 hours, minutes, secs));
+    }
+
+    private String getLogoUrl(String name) {
+        switch (name) {
+            case "Süper FM":
+                return "https://mediacdns.karnaval.com/media/station_media/1/logos/meta_image.png";
+            case "Metro FM":
+                return "https://mediacdns.karnaval.com/media/station_media/2/logos/meta_image.png";
+            case "JoyTürk":
+                return "https://mediacdns.karnaval.com/media/album_media/41616/albumcover_400x400/cover_41616.jpg";
+            case "Joy FM":
+                return "https://mediacdns.karnaval.com/media/station_media/3/logos/meta_image.png";
+            case "Virgin Radio Türkiye":
+                return "https://pbs.twimg.com/profile_images/1125687465266831362/9DtDhuas.png";
+            case "Kral Pop":
+                return "https://static-media.streema.com/media/cache/fb/f8/fbf853d0e2981fbf40d4503bb537ba63.png";
+            case "Kral FM":
+                return "https://www.dogusgrubu.com.tr/DogusGrubu_Files/202012713129787_kral-fm-logo-01.jpg";
+            case "PowerTürk":
+                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
+            case "Power FM":
+                return "https://cdn-profiles.tunein.com/s14259/images/logog.png";
+            case "Radyo Fenomen":
+                return "https://cdn.radyofenomen.com/artwork/logo20.png";
+            case "Best FM":
+                return "https://static-media.streema.com/media/cache/9e/fa/9efa50eb77fd19631846e03fbbed543b.png";
+            case "Alem FM":
+                return "https://www.google.com/s2/favicons?domain=alemfm.com.tr&sz=256";
+            case "Radyo D":
+                return "https://static2.mytuner.mobi/media/tvos_radios/444/radyo-d.29dd1547.png";
+            case "SlowTürk":
+                return "https://www.google.com/s2/favicons?domain=slowturk.com.tr&sz=256";
+            case "PAL Station":
+                return "https://ik.imagekit.io/eywz9hvpg/pal/media/station/1/logo_square.png";
+            case "PAL FM":
+                return "https://cdn-radiotime-logos.tunein.com/s107895g.png";
+            case "Kafa Radyo":
+                return "https://ik.fskit.net/radyohome/media/station/105/logo_square.png";
+            case "Show Radyo":
+                return "https://cdn-profiles.tunein.com/s341868/images/logog.jpg";
+            case "Radyo Viva":
+                return "https://i.radyoviva.com.tr/images/2025/08/21/viva-rev-logo-beyaz-21082025-kare-1080x1080-min-RM3w71Pu.jpg";
+            case "Radyo 45lik":
+                return "https://www.google.com/s2/favicons?domain=radyo45lik.com&sz=256";
+            default:
+                return "";
+        }
+    }
+
+    private void loadStationLogo(String stationName, ImageView imageView) {
+        String logoUrl = getLogoUrl(stationName);
+        if (logoUrl.isEmpty()) return;
+
+        Bitmap cached = logoCache.get(stationName);
+        if (cached != null) {
+            imageView.setImageBitmap(cached);
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                java.net.URLConnection connection = new URL(logoUrl).openConnection();
+                connection.setConnectTimeout(6000);
+                connection.setReadTimeout(6000);
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+                Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
+
+                if (bitmap != null) {
+                    logoCache.put(stationName, bitmap);
+                    runOnUiThread(() -> imageView.setImageBitmap(bitmap));
+                }
+            } catch (Exception ignored) {
+                // Logo gelmezse mevcut harf yedeği görünür.
+            }
+        }).start();
     }
 
     private int dp(
