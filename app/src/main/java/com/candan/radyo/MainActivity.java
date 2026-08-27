@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -768,6 +769,7 @@ public class MainActivity extends Activity {
             MediaMetadata metadata = new MediaMetadata.Builder()
                     .setTitle(radio[0])
                     .setArtist("Candan Radyo")
+                    .setArtworkUri(Uri.parse(getLogoUrl(radio[0])))
                     .build();
 
             items.add(new MediaItem.Builder()
