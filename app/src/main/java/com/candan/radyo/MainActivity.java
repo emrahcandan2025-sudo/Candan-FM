@@ -614,7 +614,7 @@ public class MainActivity extends Activity {
                 0,
                 dp(7),
                 0,
-                dp(12)
+                dp(30)
         );
 
         stop.setLayoutParams(
