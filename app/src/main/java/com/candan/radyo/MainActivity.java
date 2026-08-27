@@ -1,323 +1,356 @@
 package com.candan.radyo;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.media3.common.MediaItem;
-import androidx.media3.common.PlaybackException;
-import androidx.media3.common.Player;
-import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.common.MediaMetadata;
+import androidx.media3.session.MediaController;
+import androidx.media3.session.SessionToken;
+
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 public class MainActivity extends Activity {
 
-    private ExoPlayer player;
+    private ListenableFuture<MediaController> controllerFuture;
+    private MediaController controller;
+
+    private TextView stationText;
     private TextView statusText;
-    private TextView currentStationText;
-    private Button stopButton;
     private LinearLayout radioList;
 
-    private String currentName = "";
-    private String currentUrl = "";
-    private int retryCount = 0;
-
-    private final Handler handler = new Handler(Looper.getMainLooper());
     private final Set<String> favorites = new HashSet<>();
 
     private final String[][] radios = {
 
             {"Süper FM",
-             "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM128AAC_SC",
-             "S"},
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM128AAC_SC",
+                    "S"},
 
             {"Metro FM",
-             "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM128AAC_SC",
-             "M"},
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM128AAC_SC",
+                    "M"},
 
             {"JoyTürk",
-             "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURKAAC_SC",
-             "J"},
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURKAAC_SC",
+                    "J"},
 
             {"Joy FM",
-             "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM128AAC_SC",
-             "J"},
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM128AAC_SC",
+                    "J"},
 
             {"Virgin Radio Türkiye",
-             "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIOAAC_SC",
-             "V"},
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIOAAC_SC",
+                    "V"},
 
             {"Kral Pop",
-             "https://dygedge.radyotvonline.net/kralpop/playlist.m3u8",
-             "K"},
+                    "https://dygedge.radyotvonline.net/kralpop/playlist.m3u8",
+                    "K"},
 
             {"Kral FM",
-             "https://dygedge.radyotvonline.net/kralfm/playlist.m3u8",
-             "K"},
+                    "https://dygedge.radyotvonline.net/kralfm/playlist.m3u8",
+                    "K"},
 
             {"PowerTürk",
-             "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio",
-             "P"},
+                    "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio",
+                    "P"},
 
             {"Power FM",
-             "https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio",
-             "P"},
+                    "https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio",
+                    "P"},
 
             {"Radyo Fenomen",
-             "https://listen.radyofenomen.com/fenomen/128/icecast.audio",
-             "F"},
+                    "https://listen.radyofenomen.com/fenomen/128/icecast.audio",
+                    "F"},
 
             {"Fenomen Türk",
-             "https://listen.radyofenomen.com/fenomenturk/128/icecast.audio",
-             "F"},
+                    "https://listen.radyofenomen.com/fenomenturk/128/icecast.audio",
+                    "F"},
 
             {"Number1 FM",
-             "https://n10101m.mediatriple.net/numberone",
-             "N"},
+                    "https://n10101m.mediatriple.net/numberone",
+                    "N"},
 
             {"Number1 Türk",
-             "https://n10101m.mediatriple.net/numberoneturk",
-             "N"},
+                    "https://n10101m.mediatriple.net/numberoneturk",
+                    "N"},
 
             {"Number1 Türk Slow",
-             "https://n10101m.mediatriple.net/numberoneturkslow",
-             "N"},
+                    "https://n10101m.mediatriple.net/numberoneturkslow",
+                    "N"},
 
             {"Number1 Türk 90'lar",
-             "https://n10101m.mediatriple.net/numberoneturk90",
-             "N"},
+                    "https://n10101m.mediatriple.net/numberoneturk90",
+                    "N"},
 
             {"Best FM",
-             "https://bestfm.turkhosted.com/stream",
-             "B"},
+                    "https://bestfm.turkhosted.com/stream",
+                    "B"},
 
             {"Alem FM",
-             "https://playerservices.streamtheworld.com/api/livestream-redirect/ALEM_FM128AAC_SC",
-             "A"},
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/ALEM_FM128AAC_SC",
+                    "A"},
 
             {"Radyo D",
-             "https://moondigitaledge.radyotvonline.net/radyod/playlist.m3u8",
-             "D"},
+                    "https://moondigitaledge.radyotvonline.net/radyod/playlist.m3u8",
+                    "D"},
 
             {"SlowTürk",
-             "https://radyo.duhnet.tv/slowturk",
-             "S"},
+                    "https://radyo.duhnet.tv/slowturk",
+                    "S"},
 
             {"Pal Nostalji",
-             "https://shoutcast.radyogrup.com:1020/stream",
-             "P"},
+                    "https://shoutcast.radyogrup.com:1020/stream",
+                    "P"},
 
             {"Pal Station",
-             "https://shoutcast.radyogrup.com:1010/stream",
-             "P"},
+                    "https://shoutcast.radyogrup.com:1010/stream",
+                    "P"},
 
             {"TRT FM",
-             "https://radio-trtfm.live.trt.com.tr/master.m3u8",
-             "T"},
+                    "https://radio-trtfm.live.trt.com.tr/master.m3u8",
+                    "T"},
 
             {"TRT Radyo 1",
-             "https://radio-trtradyo1.live.trt.com.tr/master.m3u8",
-             "T"},
+                    "https://radio-trtradyo1.live.trt.com.tr/master.m3u8",
+                    "T"},
 
             {"TRT Türkü",
-             "https://radio-trtturku.live.trt.com.tr/master.m3u8",
-             "T"},
+                    "https://radio-trtturku.live.trt.com.tr/master.m3u8",
+                    "T"},
 
             {"TRT Nağme",
-             "https://radio-trtnagme.live.trt.com.tr/master.m3u8",
-             "T"}
+                    "https://radio-trtnagme.live.trt.com.tr/master.m3u8",
+                    "T"}
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createPlayer();
+        requestNotificationPermission();
+
+        createController();
         createInterface();
     }
 
-    private void createPlayer() {
+    private void requestNotificationPermission() {
 
-        player = new ExoPlayer.Builder(this).build();
+        if (Build.VERSION.SDK_INT >= 33) {
 
-        player.addListener(new Player.Listener() {
+            if (checkSelfPermission(
+                    Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
 
-            @Override
-            public void onPlaybackStateChanged(int state) {
+                requestPermissions(
+                        new String[]{
+                                Manifest.permission.POST_NOTIFICATIONS
+                        },
+                        100
+                );
+            }
+        }
+    }
 
-                if (state == Player.STATE_BUFFERING) {
+    private void createController() {
 
-                    statusText.setText("Bağlanıyor...");
+        SessionToken token =
+                new SessionToken(
+                        this,
+                        new ComponentName(
+                                this,
+                                RadioService.class
+                        )
+                );
 
-                } else if (state == Player.STATE_READY &&
-                           player.getPlayWhenReady()) {
+        controllerFuture =
+                new MediaController.Builder(
+                        this,
+                        token
+                ).buildAsync();
 
-                    statusText.setText("🔴 CANLI");
-                    currentStationText.setText(currentName);
-                    stopButton.setEnabled(true);
+        Executor executor =
+                command -> runOnUiThread(command);
 
-                    retryCount = 0;
-                }
+        controllerFuture.addListener(() -> {
+
+            try {
+
+                controller = controllerFuture.get();
+
+            } catch (Exception ignored) {
             }
 
-            @Override
-            public void onPlayerError(PlaybackException error) {
-
-                if (retryCount < 2 && !currentUrl.isEmpty()) {
-
-                    retryCount++;
-
-                    statusText.setText("Bağlantı yenileniyor...");
-
-                    handler.postDelayed(
-                            () -> reconnect(),
-                            1500
-                    );
-
-                } else {
-
-                    statusText.setText("Yayın açılamadı");
-
-                    stopButton.setEnabled(false);
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            currentName + " yayını açılamadı.",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            }
-        });
+        }, executor);
     }
 
     private void createInterface() {
 
-        LinearLayout main = new LinearLayout(this);
-        main.setOrientation(LinearLayout.VERTICAL);
-        main.setBackgroundColor(Color.rgb(245, 246, 248));
-        main.setPadding(20, 30, 20, 35);
+        LinearLayout main =
+                new LinearLayout(this);
 
-        TextView title = new TextView(this);
+        main.setOrientation(
+                LinearLayout.VERTICAL);
+
+        main.setBackgroundColor(
+                Color.rgb(245, 246, 248));
+
+        main.setPadding(
+                20, 30, 20, 40);
+
+
+        TextView title =
+                new TextView(this);
+
         title.setText("📻 Candan Radyo");
-        title.setTextSize(27);
-        title.setTypeface(null, Typeface.BOLD);
+        title.setTextSize(28);
+        title.setTypeface(
+                null,
+                Typeface.BOLD);
+
         title.setGravity(Gravity.CENTER);
-        title.setTextColor(Color.rgb(17, 24, 39));
-        title.setPadding(0, 10, 0, 12);
+
+        title.setTextColor(
+                Color.rgb(17, 24, 39));
+
+        title.setPadding(
+                0, 10, 0, 10);
 
         main.addView(title);
 
-        currentStationText = new TextView(this);
-        currentStationText.setText("Radyo seç");
-        currentStationText.setTextSize(18);
-        currentStationText.setTypeface(null, Typeface.BOLD);
-        currentStationText.setGravity(Gravity.CENTER);
-        currentStationText.setTextColor(Color.rgb(55, 65, 81));
 
-        main.addView(currentStationText);
+        stationText =
+                new TextView(this);
 
-        statusText = new TextView(this);
+        stationText.setText("Radyo seç");
+        stationText.setTextSize(18);
+
+        stationText.setTypeface(
+                null,
+                Typeface.BOLD);
+
+        stationText.setGravity(
+                Gravity.CENTER);
+
+        main.addView(stationText);
+
+
+        statusText =
+                new TextView(this);
+
         statusText.setText("Hazır");
         statusText.setTextSize(14);
-        statusText.setGravity(Gravity.CENTER);
-        statusText.setTextColor(Color.rgb(107, 114, 128));
-        statusText.setPadding(0, 4, 0, 12);
+
+        statusText.setGravity(
+                Gravity.CENTER);
+
+        statusText.setPadding(
+                0, 5, 0, 15);
 
         main.addView(statusText);
 
-        EditText search = new EditText(this);
+
+        EditText search =
+                new EditText(this);
+
         search.setHint("🔎 Radyo ara...");
         search.setSingleLine(true);
-        search.setTextSize(16);
-        search.setPadding(20, 5, 20, 5);
-
-        LinearLayout.LayoutParams searchParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        100
-                );
-
-        searchParams.setMargins(0, 0, 0, 10);
-        search.setLayoutParams(searchParams);
 
         main.addView(search);
 
-        ScrollView scrollView = new ScrollView(this);
 
-        radioList = new LinearLayout(this);
-        radioList.setOrientation(LinearLayout.VERTICAL);
+        ScrollView scroll =
+                new ScrollView(this);
 
-        scrollView.addView(radioList);
+        radioList =
+                new LinearLayout(this);
 
-        LinearLayout.LayoutParams scrollParams =
+        radioList.setOrientation(
+                LinearLayout.VERTICAL);
+
+        scroll.addView(radioList);
+
+
+        LinearLayout.LayoutParams sp =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         0,
                         1
                 );
 
-        main.addView(scrollView, scrollParams);
+        main.addView(scroll, sp);
 
-        stopButton = new Button(this);
-        stopButton.setText("■  Yayını Durdur");
-        stopButton.setTextSize(16);
-        stopButton.setAllCaps(false);
-        stopButton.setEnabled(false);
 
-        LinearLayout.LayoutParams stopParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        115
-                );
+        Button stop =
+                new Button(this);
 
-        stopParams.setMargins(0, 12, 0, 25);
-        stopButton.setLayoutParams(stopParams);
+        stop.setText("■ Yayını Durdur");
+        stop.setTextSize(16);
+        stop.setAllCaps(false);
 
-        stopButton.setOnClickListener(v -> stopRadio());
+        stop.setOnClickListener(v -> {
 
-        main.addView(stopButton);
+            if (controller != null) {
+
+                controller.stop();
+                controller.clearMediaItems();
+
+                stationText.setText(
+                        "Radyo seç");
+
+                statusText.setText(
+                        "Hazır");
+            }
+        });
+
+        main.addView(stop);
 
         showRadios("");
 
-        search.addTextChangedListener(new TextWatcher() {
+        search.addTextChangedListener(
+                new android.text.TextWatcher() {
 
-            @Override
-            public void beforeTextChanged(
-                    CharSequence s,
-                    int start,
-                    int count,
-                    int after) {
-            }
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s,
+                            int start,
+                            int count,
+                            int after) {
+                    }
 
-            @Override
-            public void onTextChanged(
-                    CharSequence s,
-                    int start,
-                    int before,
-                    int count) {
+                    @Override
+                    public void onTextChanged(
+                            CharSequence s,
+                            int start,
+                            int before,
+                            int count) {
 
-                showRadios(s.toString());
-            }
+                        showRadios(
+                                s.toString());
+                    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+                    @Override
+                    public void afterTextChanged(
+                            android.text.Editable s) {
+                    }
+                }
+        );
 
         setContentView(main);
     }
@@ -326,111 +359,161 @@ public class MainActivity extends Activity {
 
         radioList.removeAllViews();
 
-        String search =
-                filter.toLowerCase()
-                      .replace("ı", "i");
+        String f =
+                filter
+                        .toLowerCase()
+                        .replace("ı", "i");
 
         for (String[] radio : radios) {
 
             String name = radio[0];
-            String url = radio[1];
-            String letter = radio[2];
 
-            String searchable =
-                    name.toLowerCase()
-                        .replace("ı", "i");
+            if (!name
+                    .toLowerCase()
+                    .replace("ı", "i")
+                    .contains(f)) {
 
-            if (!searchable.contains(search)) {
                 continue;
             }
 
-            createRadioRow(name, url, letter);
+            createRow(
+                    radio[0],
+                    radio[1],
+                    radio[2]);
         }
     }
 
-    private void createRadioRow(
+    private void createRow(
             String name,
             String url,
             String letter) {
 
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(15, 8, 8, 8);
-        row.setBackgroundColor(Color.WHITE);
+        LinearLayout row =
+                new LinearLayout(this);
 
-        LinearLayout.LayoutParams rowParams =
+        row.setOrientation(
+                LinearLayout.HORIZONTAL);
+
+        row.setGravity(
+                Gravity.CENTER_VERTICAL);
+
+        row.setPadding(
+                15, 10, 10, 10);
+
+        row.setBackgroundColor(
+                Color.WHITE);
+
+
+        LinearLayout.LayoutParams rp =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        105
+                        110
                 );
 
-        rowParams.setMargins(0, 4, 0, 4);
-        row.setLayoutParams(rowParams);
+        rp.setMargins(
+                0, 5, 0, 5);
 
-        TextView logo = new TextView(this);
+        row.setLayoutParams(rp);
+
+
+        TextView logo =
+                new TextView(this);
+
         logo.setText(letter);
         logo.setTextSize(21);
-        logo.setTypeface(null, Typeface.BOLD);
-        logo.setTextColor(Color.WHITE);
-        logo.setGravity(Gravity.CENTER);
-        logo.setBackgroundColor(Color.rgb(220, 38, 38));
 
-        LinearLayout.LayoutParams logoParams =
-                new LinearLayout.LayoutParams(72, 72);
+        logo.setTypeface(
+                null,
+                Typeface.BOLD);
 
-        logo.setLayoutParams(logoParams);
+        logo.setTextColor(
+                Color.WHITE);
 
-        TextView nameText = new TextView(this);
+        logo.setGravity(
+                Gravity.CENTER);
+
+        logo.setBackgroundColor(
+                Color.rgb(220, 38, 38));
+
+
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(
+                        72, 72);
+
+        logo.setLayoutParams(lp);
+
+
+        TextView nameText =
+                new TextView(this);
+
         nameText.setText(name);
         nameText.setTextSize(18);
-        nameText.setTextColor(Color.rgb(31, 41, 55));
-        nameText.setGravity(Gravity.CENTER_VERTICAL);
-        nameText.setPadding(20, 0, 5, 0);
 
-        LinearLayout.LayoutParams nameParams =
+        nameText.setPadding(
+                20, 0, 5, 0);
+
+
+        LinearLayout.LayoutParams np =
                 new LinearLayout.LayoutParams(
                         0,
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         1
                 );
 
-        nameText.setLayoutParams(nameParams);
+        nameText.setLayoutParams(np);
 
-        Button star = new Button(this);
+        nameText.setGravity(
+                Gravity.CENTER_VERTICAL);
+
+
+        Button star =
+                new Button(this);
 
         star.setText(
-                favorites.contains(name) ? "★" : "☆"
-        );
+                favorites.contains(name)
+                        ? "★"
+                        : "☆");
 
         star.setTextSize(27);
-        star.setBackgroundColor(Color.TRANSPARENT);
 
-        LinearLayout.LayoutParams starParams =
-                new LinearLayout.LayoutParams(85, 85);
+        star.setBackgroundColor(
+                Color.TRANSPARENT);
 
-        star.setLayoutParams(starParams);
 
         star.setOnClickListener(v -> {
 
             if (favorites.contains(name)) {
 
                 favorites.remove(name);
+
                 star.setText("☆");
 
             } else {
 
                 favorites.add(name);
+
                 star.setText("★");
             }
         });
 
-        View.OnClickListener play =
-                v -> playRadio(name, url);
 
-        row.setOnClickListener(play);
-        logo.setOnClickListener(play);
-        nameText.setOnClickListener(play);
+        row.setOnClickListener(v ->
+                playStation(
+                        name,
+                        url));
+
+
+        logo.setOnClickListener(v ->
+                playStation(
+                        name,
+                        url));
+
+
+        nameText.setOnClickListener(v ->
+                playStation(
+                        name,
+                        url));
+
 
         row.addView(logo);
         row.addView(nameText);
@@ -439,70 +522,61 @@ public class MainActivity extends Activity {
         radioList.addView(row);
     }
 
-    private void playRadio(
+    private void playStation(
             String name,
             String url) {
 
-        currentName = name;
-        currentUrl = url;
-        retryCount = 0;
+        if (controller == null) {
 
-        currentStationText.setText(name);
-        statusText.setText("Bağlanıyor...");
-        stopButton.setEnabled(false);
+            statusText.setText(
+                    "Oynatıcı hazırlanıyor...");
 
-        player.stop();
-        player.clearMediaItems();
-
-        MediaItem item =
-                MediaItem.fromUri(url);
-
-        player.setMediaItem(item);
-        player.prepare();
-        player.play();
-    }
-
-    private void reconnect() {
-
-        if (currentUrl.isEmpty()) {
             return;
         }
 
-        player.stop();
-        player.clearMediaItems();
+        MediaMetadata metadata =
+                new MediaMetadata.Builder()
+                        .setTitle(name)
+                        .setArtist("Candan Radyo")
+                        .build();
 
-        player.setMediaItem(
-                MediaItem.fromUri(currentUrl)
-        );
+        MediaItem item =
+                new MediaItem.Builder()
+                        .setUri(url)
+                        .setMediaMetadata(metadata)
+                        .build();
 
-        player.prepare();
-        player.play();
-    }
+        controller.stop();
+        controller.clearMediaItems();
 
-    private void stopRadio() {
+        controller.setMediaItem(item);
 
-        player.stop();
-        player.clearMediaItems();
+        controller.prepare();
+        controller.play();
 
-        currentName = "";
-        currentUrl = "";
-        retryCount = 0;
+        stationText.setText(name);
 
-        currentStationText.setText("Radyo seç");
-        statusText.setText("Hazır");
-        stopButton.setEnabled(false);
+        statusText.setText(
+                "🔴 CANLI");
     }
 
     @Override
     protected void onDestroy() {
 
-        handler.removeCallbacksAndMessages(null);
+        /*
+         * ÖNEMLİ:
+         * Burada radyoyu durdurmuyoruz.
+         *
+         * Activity kapansa bile RadioService
+         * yayını sürdürmeye devam edecek.
+         */
 
-        if (player != null) {
-            player.release();
-            player = null;
+        if (controllerFuture != null) {
+
+            MediaController.releaseFuture(
+                    controllerFuture);
         }
 
         super.onDestroy();
     }
-} 
+}
