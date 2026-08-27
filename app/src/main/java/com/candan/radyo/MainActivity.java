@@ -10,6 +10,9 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
 
@@ -37,7 +41,22 @@ public class MainActivity extends Activity {
 
     private TextView stationText;
     private TextView liveText;
+    private TextView playPauseButton;
+    private TextView sessionTimeText;
     private LinearLayout radioList;
+
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
+    private long sessionStartedAt = 0L;
+    private long accumulatedSessionMs = 0L;
+    private boolean sessionRunning = false;
+
+    private final Runnable sessionTicker = new Runnable() {
+        @Override
+        public void run() {
+            updateSessionTime();
+            uiHandler.postDelayed(this, 1000);
+        }
+    };
 
     private SharedPreferences prefs;
     private final Set<String> favorites = new HashSet<>();
@@ -168,468 +187,210 @@ public class MainActivity extends Activity {
 
     private void createController() {
 
-        SessionToken token =
-                new SessionToken(
-                        this,
-                        new ComponentName(
-                                this,
-                                RadioService.class
-                        )
-                );
+        SessionToken token = new SessionToken(
+                this,
+                new ComponentName(this, RadioService.class)
+        );
 
-        controllerFuture =
-                new MediaController.Builder(
-                        this,
-                        token
-                ).buildAsync();
-
-        Executor executor =
-                command -> runOnUiThread(command);
+        controllerFuture = new MediaController.Builder(this, token).buildAsync();
+        Executor executor = command -> runOnUiThread(command);
 
         controllerFuture.addListener(() -> {
-
             try {
+                controller = controllerFuture.get();
 
-                controller =
-                        controllerFuture.get();
-
-                if (controller.getCurrentMediaItem() != null) {
-
-                    MediaMetadata metadata =
-                            controller
-                                    .getCurrentMediaItem()
-                                    .mediaMetadata;
-
-                    if (metadata.title != null) {
-
-                        stationText.setText(
-                                metadata.title.toString()
-                        );
-
-                        liveText.setText(
-                                "● CANLI YAYIN"
-                        );
+                controller.addListener(new Player.Listener() {
+                    @Override
+                    public void onIsPlayingChanged(boolean isPlaying) {
+                        if (isPlaying) {
+                            startSessionTimerIfNeeded();
+                        } else {
+                            pauseSessionTimer();
+                        }
+                        updatePlayerUi();
                     }
-                }
 
+                    @Override
+                    public void onMediaItemTransition(MediaItem mediaItem, int reason) {
+                        updatePlayerUi();
+                        showRadios("");
+                    }
+                });
+
+                updatePlayerUi();
             } catch (Exception ignored) {
             }
-
         }, executor);
     }
 
     private void createInterface() {
 
-        LinearLayout main =
-                new LinearLayout(this);
+        LinearLayout main = new LinearLayout(this);
+        main.setOrientation(LinearLayout.VERTICAL);
+        main.setBackgroundColor(SOFT_BG);
+        main.setPadding(dp(12), dp(12), dp(12), dp(10));
 
-        main.setOrientation(
-                LinearLayout.VERTICAL
-        );
+        TextView title = new TextView(this);
+        title.setText("📻  CANDAN RADYO");
+        title.setTextSize(27);
+        title.setTypeface(null, Typeface.BOLD);
+        title.setTextColor(Color.WHITE);
+        title.setGravity(Gravity.CENTER);
+        title.setPadding(dp(10), dp(14), dp(10), dp(14));
 
-        main.setBackgroundColor(
-                SOFT_BG
-        );
+        GradientDrawable titleBg = new GradientDrawable();
+        titleBg.setColor(RED);
+        titleBg.setCornerRadius(dp(18));
+        title.setBackground(titleBg);
+        main.addView(title);
 
-        main.setPadding(
-                dp(12),
-                dp(12),
-                dp(12),
-                dp(16)
-        );
+        EditText search = new EditText(this);
+        search.setHint("🔎 Radyo ara...");
+        search.setTextSize(16);
+        search.setSingleLine(true);
+        search.setPadding(dp(15), 0, dp(15), 0);
 
-
-        TextView title =
-                new TextView(this);
-
-        title.setText(
-                "📻  CANDAN RADYO"
-        );
-
-        title.setTextSize(
-                27
-        );
-
-        title.setTypeface(
-                null,
-                Typeface.BOLD
-        );
-
-        title.setTextColor(
-                Color.WHITE
-        );
-
-        title.setGravity(
-                Gravity.CENTER
-        );
-
-        title.setPadding(
-                dp(10),
-                dp(14),
-                dp(10),
-                dp(14)
-        );
-
-
-        GradientDrawable titleBg =
-                new GradientDrawable();
-
-        titleBg.setColor(
-                RED
-        );
-
-        titleBg.setCornerRadius(
-                dp(18)
-        );
-
-        title.setBackground(
-                titleBg
-        );
-
-        main.addView(
-                title
-        );
-
-
-        LinearLayout nowPlaying =
-                new LinearLayout(this);
-
-        nowPlaying.setOrientation(
-                LinearLayout.VERTICAL
-        );
-
-        nowPlaying.setGravity(
-                Gravity.CENTER
-        );
-
-        nowPlaying.setPadding(
-                dp(10),
-                dp(9),
-                dp(10),
-                dp(9)
-        );
-
-
-        GradientDrawable nowBg =
-                new GradientDrawable();
-
-        nowBg.setColor(
-                Color.WHITE
-        );
-
-        nowBg.setStroke(
-                dp(1),
-                RED
-        );
-
-        nowBg.setCornerRadius(
-                dp(14)
-        );
-
-        nowPlaying.setBackground(
-                nowBg
-        );
-
-
-        LinearLayout.LayoutParams nowParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-
-        nowParams.setMargins(
-                0,
-                dp(8),
-                0,
-                dp(8)
-        );
-
-        nowPlaying.setLayoutParams(
-                nowParams
-        );
-
-
-        stationText =
-                new TextView(this);
-
-        stationText.setText(
-                "Bir radyo seç"
-        );
-
-        stationText.setTextSize(
-                19
-        );
-
-        stationText.setTypeface(
-                null,
-                Typeface.BOLD
-        );
-
-        stationText.setTextColor(
-                Color.rgb(35, 35, 35)
-        );
-
-        stationText.setGravity(
-                Gravity.CENTER
-        );
-
-        nowPlaying.addView(
-                stationText
-        );
-
-
-        liveText =
-                new TextView(this);
-
-        liveText.setText(
-                "Hazır"
-        );
-
-        liveText.setTextSize(
-                13
-        );
-
-        liveText.setTextColor(
-                RED
-        );
-
-        liveText.setGravity(
-                Gravity.CENTER
-        );
-
-        liveText.setPadding(
-                0,
-                dp(3),
-                0,
-                0
-        );
-
-        nowPlaying.addView(
-                liveText
-        );
-
-        main.addView(
-                nowPlaying
-        );
-
-
-        EditText search =
-                new EditText(this);
-
-        search.setHint(
-                "🔎 Radyo ara..."
-        );
-
-        search.setTextSize(
-                16
-        );
-
-        search.setSingleLine(
-                true
-        );
-
-        search.setPadding(
-                dp(15),
-                0,
-                dp(15),
-                0
-        );
-
-
-        GradientDrawable searchBg =
-                new GradientDrawable();
-
-        searchBg.setColor(
-                Color.WHITE
-        );
-
-        searchBg.setStroke(
-                dp(1),
-                Color.rgb(220, 220, 220)
-        );
-
-        searchBg.setCornerRadius(
-                dp(12)
-        );
-
-        search.setBackground(
-                searchBg
-        );
-
+        GradientDrawable searchBg = new GradientDrawable();
+        searchBg.setColor(Color.WHITE);
+        searchBg.setStroke(dp(1), Color.rgb(220, 220, 220));
+        searchBg.setCornerRadius(dp(12));
+        search.setBackground(searchBg);
 
         LinearLayout.LayoutParams searchParams =
                 new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(48)
-                );
+                        LinearLayout.LayoutParams.MATCH_PARENT, dp(48));
+        searchParams.setMargins(0, dp(8), 0, dp(7));
+        search.setLayoutParams(searchParams);
+        main.addView(search);
 
-        searchParams.setMargins(
-                0,
-                0,
-                0,
-                dp(7)
-        );
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
 
-        search.setLayoutParams(
-                searchParams
-        );
+        radioList = new LinearLayout(this);
+        radioList.setOrientation(LinearLayout.VERTICAL);
+        scroll.addView(radioList);
 
-        main.addView(
-                search
-        );
+        main.addView(scroll, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
 
+        LinearLayout miniPlayer = new LinearLayout(this);
+        miniPlayer.setOrientation(LinearLayout.VERTICAL);
+        miniPlayer.setGravity(Gravity.CENTER);
+        miniPlayer.setPadding(dp(12), dp(8), dp(12), dp(8));
 
-        ScrollView scroll =
-                new ScrollView(this);
+        GradientDrawable miniBg = new GradientDrawable();
+        miniBg.setColor(Color.WHITE);
+        miniBg.setStroke(dp(1), RED);
+        miniBg.setCornerRadius(dp(16));
+        miniPlayer.setBackground(miniBg);
 
-        scroll.setFillViewport(
-                true
-        );
-
-        radioList =
-                new LinearLayout(this);
-
-        radioList.setOrientation(
-                LinearLayout.VERTICAL
-        );
-
-        scroll.addView(
-                radioList
-        );
-
-
-        LinearLayout.LayoutParams scrollParams =
+        LinearLayout.LayoutParams miniParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        0,
-                        1
-                );
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        miniParams.setMargins(0, dp(7), 0, dp(18));
+        miniPlayer.setLayoutParams(miniParams);
 
-        main.addView(
-                scroll,
-                scrollParams
-        );
+        stationText = new TextView(this);
+        stationText.setText("Bir radyo seç");
+        stationText.setTextSize(17);
+        stationText.setTypeface(null, Typeface.BOLD);
+        stationText.setTextColor(Color.rgb(35, 35, 35));
+        stationText.setGravity(Gravity.CENTER);
+        miniPlayer.addView(stationText);
 
+        LinearLayout infoRow = new LinearLayout(this);
+        infoRow.setOrientation(LinearLayout.HORIZONTAL);
+        infoRow.setGravity(Gravity.CENTER);
 
-        TextView stop =
-                new TextView(this);
+        liveText = new TextView(this);
+        liveText.setText("Hazır");
+        liveText.setTextSize(11);
+        liveText.setTextColor(RED);
 
-        stop.setText(
-                "■  YAYINI DURDUR"
-        );
+        sessionTimeText = new TextView(this);
+        sessionTimeText.setText("  •  00:00:00");
+        sessionTimeText.setTextSize(11);
+        sessionTimeText.setTextColor(Color.rgb(110, 110, 110));
 
-        stop.setTextSize(
-                15
-        );
+        infoRow.addView(liveText);
+        infoRow.addView(sessionTimeText);
+        miniPlayer.addView(infoRow);
 
-        stop.setTypeface(
-                null,
-                Typeface.BOLD
-        );
+        LinearLayout controls = new LinearLayout(this);
+        controls.setOrientation(LinearLayout.HORIZONTAL);
+        controls.setGravity(Gravity.CENTER);
+        controls.setPadding(0, dp(5), 0, 0);
 
-        stop.setTextColor(
-                Color.WHITE
-        );
+        TextView previous = createControlButton("⏮", false);
+        playPauseButton = createControlButton("▶", true);
+        TextView next = createControlButton("⏭", false);
 
-        stop.setGravity(
-                Gravity.CENTER
-        );
+        LinearLayout.LayoutParams side =
+                new LinearLayout.LayoutParams(dp(56), dp(42));
+        side.setMargins(dp(10), 0, dp(10), 0);
+        previous.setLayoutParams(side);
+        next.setLayoutParams(new LinearLayout.LayoutParams(side));
 
+        LinearLayout.LayoutParams middle =
+                new LinearLayout.LayoutParams(dp(64), dp(50));
+        middle.setMargins(dp(12), 0, dp(12), 0);
+        playPauseButton.setLayoutParams(middle);
 
-        GradientDrawable stopBg =
-                new GradientDrawable();
+        previous.setOnClickListener(v -> playRelative(-1));
+        next.setOnClickListener(v -> playRelative(1));
 
-        stopBg.setColor(
-                DARK_RED
-        );
+        playPauseButton.setOnClickListener(v -> {
+            if (controller == null) return;
 
-        stopBg.setCornerRadius(
-                dp(14)
-        );
-
-        stop.setBackground(
-                stopBg
-        );
-
-
-        LinearLayout.LayoutParams stopParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(50)
-                );
-
-        stopParams.setMargins(
-                0,
-                dp(7),
-                0,
-                dp(30)
-        );
-
-        stop.setLayoutParams(
-                stopParams
-        );
-
-
-        stop.setOnClickListener(v -> {
-
-            if (controller != null) {
-
-                controller.stop();
-                controller.clearMediaItems();
-
-                stationText.setText(
-                        "Bir radyo seç"
-                );
-
-                liveText.setText(
-                        "Hazır"
-                );
-
-                showRadios(
-                        search.getText().toString()
-                );
+            if (controller.getCurrentMediaItem() == null) {
+                playStation(radios[0][0], radios[0][1]);
+            } else if (controller.isPlaying()) {
+                controller.pause();
+            } else {
+                controller.play();
             }
         });
 
-        main.addView(
-                stop
-        );
+        controls.addView(previous);
+        controls.addView(playPauseButton);
+        controls.addView(next);
+        miniPlayer.addView(controls);
+        main.addView(miniPlayer);
 
         showRadios("");
 
-        search.addTextChangedListener(
-                new TextWatcher() {
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-                    @Override
-                    public void beforeTextChanged(
-                            CharSequence s,
-                            int start,
-                            int count,
-                            int after) {
-                    }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                showRadios(s.toString());
+            }
 
-                    @Override
-                    public void onTextChanged(
-                            CharSequence s,
-                            int start,
-                            int before,
-                            int count) {
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
-                        showRadios(
-                                s.toString()
-                        );
-                    }
+        setContentView(main);
+        uiHandler.post(sessionTicker);
+    }
 
-                    @Override
-                    public void afterTextChanged(
-                            Editable s) {
-                    }
-                }
-        );
+    private TextView createControlButton(String symbol, boolean primary) {
+        TextView button = new TextView(this);
+        button.setText(symbol);
+        button.setTextSize(primary ? 24 : 22);
+        button.setTypeface(null, Typeface.BOLD);
+        button.setGravity(Gravity.CENTER);
+        button.setTextColor(primary ? Color.WHITE : RED);
 
-        setContentView(
-                main
-        );
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(primary ? RED : Color.WHITE);
+        bg.setStroke(dp(1), RED);
+        bg.setCornerRadius(dp(14));
+        button.setBackground(bg);
+        return button;
     }
 
     private void showRadios(
@@ -1008,58 +769,122 @@ public class MainActivity extends Activity {
         );
     }
 
-    private void playStation(
-            String name,
-            String url) {
+    private void playStation(String name, String url) {
 
         if (controller == null) {
-
-            liveText.setText(
-                    "Oynatıcı hazırlanıyor..."
-            );
-
+            if (liveText != null) liveText.setText("Oynatıcı hazırlanıyor...");
             return;
         }
 
-        MediaMetadata metadata =
-                new MediaMetadata.Builder()
-                        .setTitle(
-                                name
-                        )
-                        .setArtist(
-                                "Candan Radyo"
-                        )
-                        .build();
+        int index = findRadioIndex(name);
+        if (index < 0) return;
 
-        MediaItem item =
-                new MediaItem.Builder()
-                        .setUri(
-                                url
-                        )
-                        .setMediaMetadata(
-                                metadata
-                        )
-                        .build();
+        java.util.ArrayList<MediaItem> items = new java.util.ArrayList<>();
 
-        controller.stop();
-        controller.clearMediaItems();
+        for (String[] radio : radios) {
+            MediaMetadata metadata = new MediaMetadata.Builder()
+                    .setTitle(radio[0])
+                    .setArtist("Candan Radyo")
+                    .build();
 
-        controller.setMediaItem(
-                item
-        );
+            items.add(new MediaItem.Builder()
+                    .setUri(radio[1])
+                    .setMediaMetadata(metadata)
+                    .build());
+        }
 
+        controller.setMediaItems(items, index, 0);
         controller.prepare();
         controller.play();
 
-        stationText.setText(
-                name
-        );
-
-        liveText.setText(
-                "● CANLI YAYIN"
-        );
-
+        startSessionTimerIfNeeded();
+        updatePlayerUi();
         showRadios("");
+    }
+
+    private int findRadioIndex(String name) {
+        for (int i = 0; i < radios.length; i++) {
+            if (radios[i][0].equals(name)) return i;
+        }
+        return -1;
+    }
+
+    private int getCurrentRadioIndex() {
+        if (controller == null ||
+                controller.getCurrentMediaItem() == null ||
+                controller.getCurrentMediaItem().mediaMetadata.title == null) {
+            return -1;
+        }
+        return findRadioIndex(
+                controller.getCurrentMediaItem().mediaMetadata.title.toString());
+    }
+
+    private void playRelative(int direction) {
+        int current = getCurrentRadioIndex();
+
+        if (current < 0) {
+            playStation(radios[0][0], radios[0][1]);
+            return;
+        }
+
+        int target = (current + direction + radios.length) % radios.length;
+        playStation(radios[target][0], radios[target][1]);
+    }
+
+    private void updatePlayerUi() {
+        if (controller == null || stationText == null ||
+                liveText == null || playPauseButton == null) return;
+
+        MediaItem current = controller.getCurrentMediaItem();
+
+        if (current != null && current.mediaMetadata.title != null) {
+            stationText.setText(current.mediaMetadata.title.toString());
+
+            if (controller.isPlaying()) {
+                liveText.setText("● CANLI");
+                playPauseButton.setText("Ⅱ");
+            } else {
+                liveText.setText("DURAKLATILDI");
+                playPauseButton.setText("▶");
+            }
+        } else {
+            stationText.setText("Bir radyo seç");
+            liveText.setText("Hazır");
+            playPauseButton.setText("▶");
+        }
+    }
+
+    private void startSessionTimerIfNeeded() {
+        if (!sessionRunning) {
+            sessionStartedAt = SystemClock.elapsedRealtime();
+            sessionRunning = true;
+        }
+    }
+
+    private void pauseSessionTimer() {
+        if (sessionRunning) {
+            accumulatedSessionMs += SystemClock.elapsedRealtime() - sessionStartedAt;
+            sessionRunning = false;
+        }
+    }
+
+    private void updateSessionTime() {
+        if (sessionTimeText == null) return;
+
+        long total = accumulatedSessionMs;
+        if (sessionRunning) {
+            total += SystemClock.elapsedRealtime() - sessionStartedAt;
+        }
+
+        long seconds = total / 1000;
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+
+        sessionTimeText.setText(String.format(
+                java.util.Locale.getDefault(),
+                "  •  %02d:%02d:%02d",
+                hours, minutes, secs));
     }
 
     private int dp(
@@ -1075,6 +900,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+
+        uiHandler.removeCallbacksAndMessages(null);
 
         if (controllerFuture != null) {
 
