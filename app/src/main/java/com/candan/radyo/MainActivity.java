@@ -156,43 +156,43 @@ public class MainActivity extends Activity {
                     "4"},
 
             {"TRT FM",
-                    "https://radio-trtfm.medya.trt.com.tr/master.m3u8",
+                    "https://radio-trtfm.live.trt.com.tr/master.m3u8",
                     "T"},
 
             {"TRT Radyo 1",
-                    "https://radio-trtradyo1.medya.trt.com.tr/master.m3u8",
+                    "https://radio-trtradyo1.live.trt.com.tr/master.m3u8",
                     "T"},
 
             {"TRT Spor Radyo",
-                    "https://radio-trtspor.medya.trt.com.tr/master.m3u8",
+                    "https://radio-trtspor.live.trt.com.tr/master.m3u8",
                     "T"},
 
             {"TRT Türkü",
-                    "https://radio-trtturku.medya.trt.com.tr/master.m3u8",
+                    "https://radio-trtturku.live.trt.com.tr/master.m3u8",
                     "T"},
 
             {"TRT Nağme",
-                    "https://radio-trtnagme.medya.trt.com.tr/master.m3u8",
+                    "https://radio-trtnagme.live.trt.com.tr/master.m3u8",
                     "T"},
 
             {"A Haber Radyo",
-                    "https://turkuvaz.daastream.com/ahaberradyo/playlist.m3u8",
+                    "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8",
                     "A"},
 
             {"A Spor Radyo",
-                    "https://turkuvaz.daastream.com/asporradyo/playlist.m3u8",
+                    "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8",
                     "A"},
 
             {"Radyo 7",
-                    "https://kanal7.daastream.com/radyo7/playlist.m3u8",
+                    "https://kanal7.radyotvonline.net/radyo7/playlist.m3u8",
                     "7"},
 
             {"Number One FM",
-                    "https://nr1.daastream.com/numberonefm/playlist.m3u8",
+                    "https://20043.live.streamtheworld.com/NUMBER1FMAAC.aac",
                     "N"},
 
             {"Number One Türk",
-                    "https://nr1.daastream.com/numberoneturk/playlist.m3u8",
+                    "https://19643.live.streamtheworld.com/NUMBER1TURK_FMAAC.aac",
                     "N"},
 
             {"Radyo Seymen",
@@ -200,11 +200,11 @@ public class MainActivity extends Activity {
                     "S"},
 
             {"Power Pop",
-                    "https://powerpop.listenpowerapp.com/powerpop/mpeg/icecast.audio",
+                    "https://listen.powerapp.com.tr/powerpop/mpeg/icecast.audio",
                     "P"},
 
             {"Power Love",
-                    "https://powerlove.listenpowerapp.com/powerlove/mpeg/icecast.audio",
+                    "https://listen.powerapp.com.tr/powerlove/mpeg/icecast.audio",
                     "P"},
 
             {"Joy FM Akustik",
@@ -212,11 +212,11 @@ public class MainActivity extends Activity {
                     "J"},
 
             {"Radyo Turkuvaz",
-                    "https://turkuvaz.daastream.com/radyoturkuvaz/playlist.m3u8",
+                    "https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8",
                     "T"},
 
             {"Vav Radyo",
-                    "https://turkuvaz.daastream.com/vavradyo/playlist.m3u8",
+                    "https://trkvz-radyolar.ercdn.net/vavradyo/playlist.m3u8",
                     "V"},
 
             {"Lig Radyo",
@@ -228,7 +228,7 @@ public class MainActivity extends Activity {
                     "A"},
 
             {"Radyo Spor",
-                    "https://saran.daastream.com/radyospor/playlist.m3u8",
+                    "https://ssldyg.radyotvonline.com/radyospor/playlist.m3u8",
                     "S"},
 
             {"Radyo Voyage",
