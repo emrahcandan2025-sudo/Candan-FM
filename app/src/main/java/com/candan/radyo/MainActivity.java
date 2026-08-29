@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
@@ -129,7 +130,7 @@ public class MainActivity extends Activity {
     private void createController() {
         SessionToken token = new SessionToken(this, new ComponentName(this, RadioService.class));
         controllerFuture = new MediaController.Builder(this, token).buildAsync();
-        Executor executor = command -> runOnUiThread(command);
+        Executor executor = this::runOnUiThread;
 
         controllerFuture.addListener(() -> {
             try {
@@ -475,10 +476,16 @@ public class MainActivity extends Activity {
                     .setArtworkUri(Uri.parse(getLogoUrl(radio[0])))
                     .build();
 
-            items.add(new MediaItem.Builder()
+            MediaItem.Builder builder = new MediaItem.Builder()
+                    .setMediaId(radio[1])
                     .setUri(radio[1])
-                    .setMediaMetadata(metadata)
-                    .build());
+                    .setMediaMetadata(metadata);
+
+            if (radio[1].contains(".m3u8")) {
+                builder.setMimeType(MimeTypes.APPLICATION_M3U8);
+            }
+
+            items.add(builder.build());
         }
 
         controller.setMediaItems(items, index, 0);
