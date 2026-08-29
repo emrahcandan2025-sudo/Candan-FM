@@ -1,12 +1,9 @@
 package com.candan.radyo;
 
 import android.content.Intent;
-import android.net.Uri;
 import androidx.annotation.Nullable;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
-import androidx.media3.common.MediaItem;
-import androidx.media3.common.MimeTypes;
 import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.ExoPlayer;
@@ -47,32 +44,8 @@ public class RadioService extends MediaLibraryService {
                 .setHandleAudioBecomingNoisy(true)
                 .build();
 
-        mediaLibrarySession = new MediaLibrarySession.Builder(this, player, new MediaLibrarySession.Callback() {
-            @Override
-            public MediaSession.MediaItemsWithLocalCommandResult onAddMediaItems(
-                    MediaSession mediaSession,
-                    MediaSession.ControllerInfo controllerInfo,
-                    java.util.List<MediaItem> mediaItems) {
-
-                java.util.List<MediaItem> updatedItems = new java.util.ArrayList<>();
-                for (MediaItem item : mediaItems) {
-                    if (item.localConfiguration != null) {
-                        String uriString = item.localConfiguration.uri.toString();
-                        MediaItem.Builder builder = item.buildUpon();
-
-                        if (uriString.contains(".m3u8")) {
-                            builder.setMimeType(MimeTypes.APPLICATION_M3U8);
-                        } else if (uriString.contains(".aac")) {
-                            builder.setMimeType(MimeTypes.AUDIO_AAC);
-                        }
-                        updatedItems.add(builder.build());
-                    } else {
-                        updatedItems.add(item);
-                    }
-                }
-                return new MediaSession.MediaItemsWithLocalCommandResult(updatedItems, 0);
-            }
-        }).build();
+        mediaLibrarySession = new MediaLibrarySession.Builder(this, player, new MediaLibrarySession.Callback() {})
+                .build();
     }
 
     @Nullable
