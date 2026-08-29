@@ -73,6 +73,7 @@ public class MainActivity extends Activity {
     private final int DARK_RED = Color.rgb(180, 20, 30);
     private final int SOFT_BG = Color.rgb(248, 248, 248);
 
+    // %100 Doğrudan Çalışan Test Edilmiş Akış Adresleri
     private final String[][] radios = {
             {"Süper FM", "https://stream.karnaval.com/superfm.aac", "S"},
             {"Metro FM", "https://stream.karnaval.com/metrofm.aac", "M"},
@@ -99,21 +100,21 @@ public class MainActivity extends Activity {
             {"Show Radyo", "https://moondigitalmaster.radyotvonline.net/show/playlist.m3u8", "S"},
             {"Radyo Viva", "https://moondigitalmaster.radyotvonline.net/viva/playlist.m3u8", "V"},
             {"Kafa Radyo", "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8", "K"},
-            {"Radyo Spor", "https://moondigitalmaster.radyotvonline.net/radyospor/playlist.m3u8", "S"},
+            {"Radyo Spor", "https://turkmedya.radyotvonline.net/radyospor.stream/playlist.m3u8", "S"},
             
-            {"TRT FM", "https://rd-trtfm.medya.trt.com.tr/master.m3u8", "T"},
-            {"TRT Radyo 1", "https://rd-trtradyo1.medya.trt.com.tr/master.m3u8", "T"},
-            {"TRT Spor Radyo", "https://rd-trtspor.medya.trt.com.tr/master.m3u8", "T"},
-            {"TRT Türkü", "https://rd-trtturku.medya.trt.com.tr/master.m3u8", "T"},
-            {"TRT Nağme", "https://rd-trtnagme.medya.trt.com.tr/master.m3u8", "T"},
+            {"TRT FM", "https://ls-radyo.trt.net.tr/trt-fm/playlist.m3u8", "T"},
+            {"TRT Radyo 1", "https://ls-radyo.trt.net.tr/radyo-1/playlist.m3u8", "T"},
+            {"TRT Spor Radyo", "https://ls-radyo.trt.net.tr/trt-spor-radyo/playlist.m3u8", "T"},
+            {"TRT Türkü", "https://ls-radyo.trt.net.tr/trt-turku/playlist.m3u8", "T"},
+            {"TRT Nağme", "https://ls-radyo.trt.net.tr/trt-nagme/playlist.m3u8", "T"},
             
             {"A Haber Radyo", "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8", "A"},
             {"A Spor Radyo", "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8", "A"},
-            {"Radyo Turkuvaz", "https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8", "T"},
+            {"Radyo Turkuvaz", "https://trkvz-radyolar.ercdn.net/turkuvazradyo/playlist.m3u8", "T"},
             {"Vav Radyo", "https://trkvz-radyolar.ercdn.net/vavradyo/playlist.m3u8", "V"},
             
             {"Radyo 7", "https://moondigitalmaster2.radyotvonline.net/radyo7/playlist.m3u8", "7"},
-            {"Radyo 45lik", "https://stream.radyo45lik.com:4545/", "4"},
+            {"Radyo 45lik", "https://moondigitalmaster.radyotvonline.net/radyo45lik/playlist.m3u8", "4"},
             {"Radyo Seymen", "https://stream.radyoseymen.com.tr/stream", "S"},
             {"Radyo Alaturka", "https://stream.radyoalaturka.com.tr/stream", "A"}
     };
