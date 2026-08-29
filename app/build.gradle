@@ -32,9 +32,9 @@ dependencies {
     
     // Media3 (ExoPlayer & MediaSession)
     implementation 'androidx.media3:media3-exoplayer:1.2.1'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.2.1'
     implementation 'androidx.media3:media3-session:1.2.1'
     implementation 'androidx.media3:media3-common:1.2.1'
-    implementation 'androidx.media3:media3-datasource-hls:1.2.1'
     
     // Guava (ListenableFuture için)
     implementation 'com.google.guava:guava:31.1-android'
