@@ -153,7 +153,87 @@ public class MainActivity extends Activity {
 
             {"Radyo 45lik",
                     "https://stream.radyo45lik.com:4545/",
-                    "4"}
+                    "4"},
+
+            {"TRT FM",
+                    "https://radio-trtfm.medya.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Radyo 1",
+                    "https://radio-trtradyo1.medya.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Spor Radyo",
+                    "https://radio-trtspor.medya.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Türkü",
+                    "https://radio-trtturku.medya.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"TRT Nağme",
+                    "https://radio-trtnagme.medya.trt.com.tr/master.m3u8",
+                    "T"},
+
+            {"A Haber Radyo",
+                    "https://turkuvaz.daastream.com/ahaberradyo/playlist.m3u8",
+                    "A"},
+
+            {"A Spor Radyo",
+                    "https://turkuvaz.daastream.com/asporradyo/playlist.m3u8",
+                    "A"},
+
+            {"Radyo 7",
+                    "https://kanal7.daastream.com/radyo7/playlist.m3u8",
+                    "7"},
+
+            {"Number One FM",
+                    "https://nr1.daastream.com/numberonefm/playlist.m3u8",
+                    "N"},
+
+            {"Number One Türk",
+                    "https://nr1.daastream.com/numberoneturk/playlist.m3u8",
+                    "N"},
+
+            {"Radyo Seymen",
+                    "https://stream.radyoseymen.com.tr/stream",
+                    "S"},
+
+            {"Power Pop",
+                    "https://powerpop.listenpowerapp.com/powerpop/mpeg/icecast.audio",
+                    "P"},
+
+            {"Power Love",
+                    "https://powerlove.listenpowerapp.com/powerlove/mpeg/icecast.audio",
+                    "P"},
+
+            {"Joy FM Akustik",
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_AKUSTIKAAC_SC",
+                    "J"},
+
+            {"Radyo Turkuvaz",
+                    "https://turkuvaz.daastream.com/radyoturkuvaz/playlist.m3u8",
+                    "T"},
+
+            {"Vav Radyo",
+                    "https://turkuvaz.daastream.com/vavradyo/playlist.m3u8",
+                    "V"},
+
+            {"Lig Radyo",
+                    "https://turkmedya.radyotvonline.net/ligrfm",
+                    "L"},
+
+            {"Radyo Alaturka",
+                    "https://stream.radyoalaturka.com.tr/stream",
+                    "A"},
+
+            {"Radyo Spor",
+                    "https://saran.daastream.com/radyospor/playlist.m3u8",
+                    "S"},
+
+            {"Radyo Voyage",
+                    "https://dygedge.radyotvonline.net/voyage/playlist.m3u8",
+                    "V"}
     };
 
     @Override
@@ -401,137 +481,62 @@ public class MainActivity extends Activity {
         return button;
     }
 
-    private void showRadios(
-            String filter) {
+    private void showRadios(String filter) {
 
         radioList.removeAllViews();
 
-        String f =
-                filter
-                        .toLowerCase()
-                        .replace("ı", "i");
+        String f = filter.toLowerCase().replace("ı", "i");
 
         for (String[] radio : radios) {
 
-            String name =
-                    radio[0];
-
-            String searchable =
-                    name
-                            .toLowerCase()
-                            .replace("ı", "i");
+            String name = radio[0];
+            String searchable = name.toLowerCase().replace("ı", "i");
 
             if (!searchable.contains(f)) {
                 continue;
             }
 
-            createRadioRow(
-                    radio[0],
-                    radio[1],
-                    radio[2]
-            );
+            createRadioRow(radio[0], radio[1], radio[2]);
         }
     }
 
-    private void createRadioRow(
-            String name,
-            String url,
-            String letter) {
+    private void createRadioRow(String name, String url, String letter) {
 
         boolean isCurrent = false;
 
         if (controller != null &&
                 controller.getCurrentMediaItem() != null &&
-                controller
-                        .getCurrentMediaItem()
-                        .mediaMetadata
-                        .title != null) {
+                controller.getCurrentMediaItem().mediaMetadata.title != null) {
 
-            isCurrent =
-                    name.equals(
-                            controller
-                                    .getCurrentMediaItem()
-                                    .mediaMetadata
-                                    .title
-                                    .toString()
-                    );
+            isCurrent = name.equals(
+                    controller.getCurrentMediaItem().mediaMetadata.title.toString()
+            );
         }
 
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(7), dp(5), dp(5), dp(5));
 
-        LinearLayout row =
-                new LinearLayout(this);
+        GradientDrawable rowBg = new GradientDrawable();
+        rowBg.setColor(Color.WHITE);
+        rowBg.setStroke(dp(isCurrent ? 2 : 1), isCurrent ? RED : Color.rgb(225, 225, 225));
+        rowBg.setCornerRadius(dp(8));
+        row.setBackground(rowBg);
 
-        row.setOrientation(
-                LinearLayout.HORIZONTAL
-        );
-
-        row.setGravity(
-                Gravity.CENTER_VERTICAL
-        );
-
-        row.setPadding(
-                dp(7),
-                dp(5),
-                dp(5),
-                dp(5)
-        );
-
-
-        GradientDrawable rowBg =
-                new GradientDrawable();
-
-        rowBg.setColor(
-                Color.WHITE
-        );
-
-        rowBg.setStroke(
-                dp(isCurrent ? 2 : 1),
-                isCurrent
-                        ? RED
-                        : Color.rgb(
-                                225,
-                                225,
-                                225
-                        )
-        );
-
-        rowBg.setCornerRadius(
-                dp(8)
-        );
-
-        row.setBackground(
-                rowBg
-        );
-
-
-        LinearLayout.LayoutParams rowParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(58)
-                );
-
-        rowParams.setMargins(
-                0,
-                dp(2),
-                0,
-                dp(2)
-        );
-
-        row.setLayoutParams(
-                rowParams
-        );
-
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dp(58));
+        rowParams.setMargins(0, dp(2), 0, dp(2));
+        row.setLayoutParams(rowParams);
 
         FrameLayout logoBox = new FrameLayout(this);
-
         GradientDrawable logoBoxBg = new GradientDrawable();
         logoBoxBg.setColor(Color.WHITE);
         logoBoxBg.setStroke(dp(2), RED);
         logoBoxBg.setCornerRadius(dp(7));
         logoBox.setBackground(logoBoxBg);
 
-        LinearLayout.LayoutParams logoParams =
-                new LinearLayout.LayoutParams(dp(43), dp(43));
+        LinearLayout.LayoutParams logoParams = new LinearLayout.LayoutParams(dp(43), dp(43));
         logoBox.setLayoutParams(logoParams);
 
         TextView logoFallback = new TextView(this);
@@ -541,10 +546,9 @@ public class MainActivity extends Activity {
         logoFallback.setTextColor(RED);
         logoFallback.setGravity(Gravity.CENTER);
 
-        FrameLayout.LayoutParams fill =
-                new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT);
+        FrameLayout.LayoutParams fill = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
 
         logoBox.addView(logoFallback, fill);
 
@@ -555,202 +559,67 @@ public class MainActivity extends Activity {
 
         loadStationLogo(name, logoImage);
 
-        LinearLayout center =
-                new LinearLayout(this);
+        LinearLayout center = new LinearLayout(this);
+        center.setOrientation(LinearLayout.VERTICAL);
+        center.setGravity(Gravity.CENTER_VERTICAL);
 
-        center.setOrientation(
-                LinearLayout.VERTICAL
-        );
+        LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
+        centerParams.setMargins(dp(12), 0, dp(5), 0);
+        center.setLayoutParams(centerParams);
 
-        center.setGravity(
-                Gravity.CENTER_VERTICAL
-        );
+        TextView nameText = new TextView(this);
+        nameText.setText(name);
+        nameText.setTextSize(17);
+        nameText.setTypeface(null, isCurrent ? Typeface.BOLD : Typeface.NORMAL);
+        nameText.setTextColor(isCurrent ? RED : Color.rgb(45, 45, 45));
 
-
-        LinearLayout.LayoutParams centerParams =
-                new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        1
-                );
-
-        centerParams.setMargins(
-                dp(12),
-                0,
-                dp(5),
-                0
-        );
-
-        center.setLayoutParams(
-                centerParams
-        );
-
-
-        TextView nameText =
-                new TextView(this);
-
-        nameText.setText(
-                name
-        );
-
-        nameText.setTextSize(
-                17
-        );
-
-        nameText.setTypeface(
-                null,
-                isCurrent
-                        ? Typeface.BOLD
-                        : Typeface.NORMAL
-        );
-
-        nameText.setTextColor(
-                isCurrent
-                        ? RED
-                        : Color.rgb(
-                                45,
-                                45,
-                                45
-                        )
-        );
-
-        center.addView(
-                nameText
-        );
-
+        center.addView(nameText);
 
         if (isCurrent) {
-
-            TextView playing =
-                    new TextView(this);
-
-            playing.setText(
-                    "● CANLI"
-            );
-
-            playing.setTextSize(
-                    10
-            );
-
-            playing.setTextColor(
-                    RED
-            );
-
-            center.addView(
-                    playing
-            );
+            TextView playing = new TextView(this);
+            playing.setText("● CANLI");
+            playing.setTextSize(10);
+            playing.setTextColor(RED);
+            center.addView(playing);
         }
 
+        TextView star = new TextView(this);
+        star.setText(favorites.contains(name) ? "★" : "☆");
+        star.setTextSize(26);
+        star.setTextColor(Color.WHITE);
+        star.setGravity(Gravity.CENTER);
 
-        TextView star =
-                new TextView(this);
+        GradientDrawable starBg = new GradientDrawable();
+        starBg.setColor(favorites.contains(name) ? DARK_RED : RED);
+        starBg.setCornerRadius(dp(6));
+        star.setBackground(starBg);
 
-        star.setText(
-                favorites.contains(name)
-                        ? "★"
-                        : "☆"
-        );
-
-        star.setTextSize(
-                26
-        );
-
-        star.setTextColor(
-                Color.WHITE
-        );
-
-        star.setGravity(
-                Gravity.CENTER
-        );
-
-
-        GradientDrawable starBg =
-                new GradientDrawable();
-
-        starBg.setColor(
-                favorites.contains(name)
-                        ? DARK_RED
-                        : RED
-        );
-
-        starBg.setCornerRadius(
-                dp(6)
-        );
-
-        star.setBackground(
-                starBg
-        );
-
-
-        LinearLayout.LayoutParams starParams =
-                new LinearLayout.LayoutParams(
-                        dp(49),
-                        dp(46)
-                );
-
-        star.setLayoutParams(
-                starParams
-        );
-
+        LinearLayout.LayoutParams starParams = new LinearLayout.LayoutParams(dp(49), dp(46));
+        star.setLayoutParams(starParams);
 
         star.setOnClickListener(v -> {
-
             if (favorites.contains(name)) {
-
                 favorites.remove(name);
                 star.setText("☆");
-
             } else {
-
                 favorites.add(name);
                 star.setText("★");
             }
-
-            prefs.edit()
-                    .putStringSet(
-                            "favorites",
-                            new HashSet<>(
-                                    favorites
-                            )
-                    )
-                    .apply();
+            prefs.edit().putStringSet("favorites", new HashSet<>(favorites)).apply();
         });
 
+        View.OnClickListener play = v -> playStation(name, url);
 
-        View.OnClickListener play =
-                v -> playStation(
-                        name,
-                        url
-                );
+        row.setOnClickListener(play);
+        logoBox.setOnClickListener(play);
+        center.setOnClickListener(play);
 
-        row.setOnClickListener(
-                play
-        );
+        row.addView(logoBox);
+        row.addView(center);
+        row.addView(star);
 
-        logoBox.setOnClickListener(
-                play
-        );
-
-        center.setOnClickListener(
-                play
-        );
-
-
-        row.addView(
-                logoBox
-        );
-
-        row.addView(
-                center
-        );
-
-        row.addView(
-                star
-        );
-
-        radioList.addView(
-                row
-        );
+        radioList.addView(row);
     }
 
     private void playStation(String name, String url) {
@@ -914,6 +783,46 @@ public class MainActivity extends Activity {
                 return "https://i.radyoviva.com.tr/images/2025/08/21/viva-rev-logo-beyaz-21082025-kare-1080x1080-min-RM3w71Pu.jpg";
             case "Radyo 45lik":
                 return "https://www.google.com/s2/favicons?domain=radyo45lik.com&sz=256";
+            case "TRT FM":
+                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
+            case "TRT Radyo 1":
+                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
+            case "TRT Spor Radyo":
+                return "https://www.google.com/s2/favicons?domain=trtspor.com.tr&sz=256";
+            case "TRT Türkü":
+                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
+            case "TRT Nağme":
+                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
+            case "A Haber Radyo":
+                return "https://www.google.com/s2/favicons?domain=ahaber.com.tr&sz=256";
+            case "A Spor Radyo":
+                return "https://www.google.com/s2/favicons?domain=aspor.com.tr&sz=256";
+            case "Radyo 7":
+                return "https://www.google.com/s2/favicons?domain=radyo7.com&sz=256";
+            case "Number One FM":
+                return "https://www.google.com/s2/favicons?domain=numberone.com.tr&sz=256";
+            case "Number One Türk":
+                return "https://www.google.com/s2/favicons?domain=numberone.com.tr&sz=256";
+            case "Radyo Seymen":
+                return "https://www.google.com/s2/favicons?domain=radyoseymen.com.tr&sz=256";
+            case "Power Pop":
+                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
+            case "Power Love":
+                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
+            case "Joy FM Akustik":
+                return "https://mediacdns.karnaval.com/media/station_media/3/logos/meta_image.png";
+            case "Radyo Turkuvaz":
+                return "https://www.google.com/s2/favicons?domain=radyoturkuvaz.com.tr&sz=256";
+            case "Vav Radyo":
+                return "https://www.google.com/s2/favicons?domain=vavradyo.com.tr&sz=256";
+            case "Lig Radyo":
+                return "https://www.google.com/s2/favicons?domain=ligradyo.com.tr&sz=256";
+            case "Radyo Alaturka":
+                return "https://www.google.com/s2/favicons?domain=radyoalaturka.com.tr&sz=256";
+            case "Radyo Spor":
+                return "https://www.google.com/s2/favicons?domain=radyospor.com&sz=256";
+            case "Radyo Voyage":
+                return "https://www.google.com/s2/favicons?domain=radyovoyage.com&sz=256";
             default:
                 return "";
         }
@@ -942,32 +851,20 @@ public class MainActivity extends Activity {
                     runOnUiThread(() -> imageView.setImageBitmap(bitmap));
                 }
             } catch (Exception ignored) {
-                // Logo gelmezse mevcut harf yedeği görünür.
             }
         }).start();
     }
 
-    private int dp(
-            int value) {
-
-        return (int) (
-                value *
-                        getResources()
-                                .getDisplayMetrics()
-                                .density
-        );
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density);
     }
 
     @Override
     protected void onDestroy() {
-
         uiHandler.removeCallbacksAndMessages(null);
 
         if (controllerFuture != null) {
-
-            MediaController.releaseFuture(
-                    controllerFuture
-            );
+            MediaController.releaseFuture(controllerFuture);
         }
 
         super.onDestroy();
