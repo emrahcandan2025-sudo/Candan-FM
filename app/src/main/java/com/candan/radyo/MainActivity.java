@@ -19,7 +19,6 @@ import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -30,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
@@ -446,7 +446,6 @@ public class MainActivity extends Activity {
             showRadios(currentSearchText);
         });
 
-        // Tüm satırı tek tıklama alanına çevirdik
         row.setOnClickListener(v -> playStation(name));
 
         row.addView(logoBox);
@@ -465,7 +464,6 @@ public class MainActivity extends Activity {
         int index = findRadioIndex(name);
         if (index < 0) return;
 
-        // Oynatma listesini MediaController'a sadece 1 defa yükle veya index değiştir
         if (controller.getMediaItemCount() == 0) {
             java.util.ArrayList<MediaItem> items = new java.util.ArrayList<>();
             for (String[] radio : radios) {
@@ -475,10 +473,17 @@ public class MainActivity extends Activity {
                         .setArtworkUri(Uri.parse(getLogoUrl(radio[0])))
                         .build();
 
-                items.add(new MediaItem.Builder()
+                MediaItem.Builder itemBuilder = new MediaItem.Builder()
                         .setUri(radio[1])
-                        .setMediaMetadata(metadata)
-                        .build());
+                        .setMediaMetadata(metadata);
+
+                if (radio[1].contains(".m3u8")) {
+                    itemBuilder.setMimeType(MimeTypes.APPLICATION_M3U8);
+                } else if (radio[1].contains(".aac")) {
+                    itemBuilder.setMimeType(MimeTypes.AUDIO_AAC);
+                }
+
+                items.add(itemBuilder.build());
             }
             controller.setMediaItems(items, index, 0);
         } else {
