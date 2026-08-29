@@ -1,14 +1,18 @@
 package com.candan.radyo;
 
 import android.content.Intent;
-import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
-import androidx.media3.common.Player;
+import androidx.media3.datasource.DefaultDataSource;
+import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.hls.HlsMediaSource;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.session.MediaLibraryService;
 import androidx.media3.session.MediaSession;
+
+import okhttp3.OkHttpClient;
 
 public class RadioService extends MediaLibraryService {
 
@@ -19,13 +23,31 @@ public class RadioService extends MediaLibraryService {
     public void onCreate() {
         super.onCreate();
 
-        // Ses odaklanması (Audio Focus) ve medya türü ayarı
+        // 1. Özelleştirilmiş Ağ İstemcisi (Yönlendirme & SSL Desteği)
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .followRedirects(true)
+                .followSslRedirects(true)
+                .build();
+
+        // 2. Özel User-Agent ile Veri Kaynağı (Radyo Sunucu Engellerini Açar)
+        OkHttpDataSource.Factory okHttpDataSourceFactory = new OkHttpDataSource.Factory(okHttpClient)
+                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+
+        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(this, okHttpDataSourceFactory);
+
+        // 3. Medya Kaynağı Fabrikası (HLS ve Canlı Akışlar Dahil)
+        DefaultMediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory)
+                .setServerSideInsertedAdsLoader(null);
+
+        // 4. Ses Odaklanması (Audio Focus)
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                 .setUsage(C.USAGE_MEDIA)
                 .build();
 
+        // 5. Oyuncuyu Hazırla
         player = new ExoPlayer.Builder(this)
+                .setMediaSourceFactory(mediaSourceFactory)
                 .setAudioAttributes(audioAttributes, true)
                 .setHandleAudioBecomingNoisy(true)
                 .build();
