@@ -30,12 +30,16 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     
-    // Media3 (ExoPlayer & MediaSession)
+    // Media3 Oynatıcı & Ağ Bağlantı Paketleri
     implementation 'androidx.media3:media3-exoplayer:1.2.1'
     implementation 'androidx.media3:media3-exoplayer-hls:1.2.1'
+    implementation 'androidx.media3:media3-datasource-okhttp:1.2.1'
     implementation 'androidx.media3:media3-session:1.2.1'
     implementation 'androidx.media3:media3-common:1.2.1'
     
-    // Guava (ListenableFuture için)
+    // Güvenli ve Esnek Ağ İstemcisi
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    
+    // Guava
     implementation 'com.google.guava:guava:31.1-android'
 }
