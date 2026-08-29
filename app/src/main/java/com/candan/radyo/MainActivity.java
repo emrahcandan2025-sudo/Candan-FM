@@ -5,12 +5,11 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,18 +28,17 @@ import android.widget.TextView;
 
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
-import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ConcurrentHashMap;
+import java.net.URL;
 
 public class MainActivity extends Activity {
 
@@ -75,45 +73,115 @@ public class MainActivity extends Activity {
     private final int SOFT_BG = Color.rgb(248, 248, 248);
 
     private final String[][] radios = {
-            {"Süper FM", "https://stream.karnaval.com/superfm.aac", "S"},
-            {"Metro FM", "https://stream.karnaval.com/metrofm.aac", "M"},
-            {"JoyTürk", "https://stream.karnaval.com/joyturk.aac", "J"},
-            {"Joy FM", "https://stream.karnaval.com/joyfm.aac", "J"},
-            {"Virgin Radio", "https://stream.karnaval.com/virginradio.aac", "V"},
 
-            {"Kral FM", "https://ssli.kralfm.com.tr/kralfm/kralfm.stream/playlist.m3u8", "K"},
-            {"Kral Pop", "https://ssli.kralpop.com.tr/kralpop/kralpop.stream/playlist.m3u8", "K"},
-            {"Radyo Voyage", "https://ssli.radyovoyage.com.tr/voyage/voyage.stream/playlist.m3u8", "V"},
+            {"Süper FM",
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM128AAC_SC",
+                    "S"},
 
-            {"Power FM", "https://powerfm.listenpowerapp.com/powerfm/mpeg/icecast.audio", "P"},
-            {"PowerTürk", "https://powerturk.listenpowerapp.com/powerturk/mpeg/icecast.audio", "P"},
-            {"Power Pop", "https://powerpop.listenpowerapp.com/powerpop/mpeg/icecast.audio", "P"},
+            {"Metro FM",
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM128AAC_SC",
+                    "M"},
 
-            {"SlowTürk", "https://r3.rocketcdn.com/slowturk/abr/playlist.m3u8", "S"},
-            {"Radyo Fenomen", "https://live.radyofenomen.com/fenomen/256/icecast.audio", "F"},
-            {"Alem FM", "https://turkmedya.radyotvonline.com/turkmedya/alemfm.stream/playlist.m3u8", "A"},
-            {"Lig Radyo", "https://turkmedya.radyotvonline.com/turkmedya/ligradyo.stream/playlist.m3u8", "L"},
-            {"Radyo Spor", "https://turkmedya.radyotvonline.net/radyospor.stream/playlist.m3u8", "S"},
-            {"Kafa Radyo", "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8", "K"},
-            {"Radyo 45lik", "https://moondigitalmaster.radyotvonline.net/radyo45lik/playlist.m3u8", "4"},
-            {"Best FM", "http://37.247.100.100/best/bestfm.stream/playlist.m3u8", "B"},
+            {"JoyTürk",
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURKAAC_SC",
+                    "J"},
 
-            {"TRT FM", "https://ls-radyo.trt.net.tr/trt-fm/playlist.m3u8", "T"},
-            {"TRT Radyo 1", "https://ls-radyo.trt.net.tr/radyo-1/playlist.m3u8", "T"},
-            {"TRT Türkü", "https://ls-radyo.trt.net.tr/trt-turku/playlist.m3u8", "T"},
-            {"TRT Nağme", "https://ls-radyo.trt.net.tr/trt-nagme/playlist.m3u8", "T"},
+            {"Joy FM",
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM128AAC_SC",
+                    "J"},
 
-            {"A Haber Radyo", "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8", "A"},
-            {"A Spor Radyo", "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8", "A"},
-            {"Radyo Turkuvaz", "https://trkvz-radyolar.ercdn.net/turkuvazradyo/playlist.m3u8", "T"}
+            {"Virgin Radio Türkiye",
+                    "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIOAAC_SC",
+                    "V"},
+
+            {"Kral Pop",
+                    "https://dygedge.radyotvonline.net/kralpop/playlist.m3u8",
+                    "K"},
+
+            {"Kral FM",
+                    "https://dygedge2.radyotvonline.net/kralfm/playlist.m3u8",
+                    "K"},
+
+            {"PowerTürk",
+                    "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio",
+                    "P"},
+
+            {"Power FM",
+                    "https://listen.powerapp.com.tr/powerfm/256/chunks.m3u8",
+                    "P"},
+
+            {"Radyo Fenomen",
+                    "https://live.radyofenomen.com/fenomen/256/icecast.audio",
+                    "F"},
+
+            {"Best FM",
+                    "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
+                    "B"},
+
+            {"Alem FM",
+                    "https://turkmedya.radyotvonline.net/alemfmaac",
+                    "A"},
+
+            {"Radyo D",
+                    "https://moondigitaledge2.radyotvonline.net/radyod/playlist.m3u8",
+                    "D"},
+
+            {"SlowTürk",
+                    "https://radyo.duhnet.tv/slowturk",
+                    "S"},
+
+            {"PAL Station",
+                    "http://shoutcast.radyogrup.com:1020/",
+                    "P"},
+
+            {"PAL FM",
+                    "http://shoutcast.radyogrup.com:1030/",
+                    "P"},
+
+            {"Kafa Radyo",
+                    "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8",
+                    "K"},
+
+            {"Show Radyo",
+                    "http://46.20.3.229/",
+                    "S"},
+
+            {"Radyo Viva",
+                    "http://46.20.3.231/",
+                    "V"},
+
+            {"Radyo 45lik",
+                    "https://stream.radyo45lik.com:4545/",
+                    "4"},
+
+            {"Fenomen Pop",
+                    "https://live.radyofenomen.com/fenomenpop/abr/fenomenpop/128/chunks.m3u8",
+                    "F"},
+
+            {"Fenomen Türk",
+                    "https://live.radyofenomen.com/fenomenturk/abr/fenomenturk/256/chunks.m3u8",
+                    "F"},
+
+            {"Fenomen Akustik",
+                    "https://live.radyofenomen.com/fenomenakustik/abr/fenomenakustik/128/chunks.m3u8",
+                    "F"}
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        prefs = getSharedPreferences("candan_radyo", MODE_PRIVATE);
-        favorites.addAll(prefs.getStringSet("favorites", new HashSet<>()));
+        prefs = getSharedPreferences(
+                "candan_radyo",
+                MODE_PRIVATE
+        );
+
+        favorites.addAll(
+                prefs.getStringSet(
+                        "favorites",
+                        new HashSet<>()
+                )
+        );
 
         requestNotificationPermission();
         createController();
@@ -121,16 +189,30 @@ public class MainActivity extends Activity {
     }
 
     private void requestNotificationPermission() {
+
         if (Build.VERSION.SDK_INT >= 33 &&
-                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 100);
+                checkSelfPermission(
+                        Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(
+                    new String[]{
+                            Manifest.permission.POST_NOTIFICATIONS
+                    },
+                    100
+            );
         }
     }
 
     private void createController() {
-        SessionToken token = new SessionToken(this, new ComponentName(this, RadioService.class));
+
+        SessionToken token = new SessionToken(
+                this,
+                new ComponentName(this, RadioService.class)
+        );
+
         controllerFuture = new MediaController.Builder(this, token).buildAsync();
-        Executor executor = this::runOnUiThread;
+        Executor executor = command -> runOnUiThread(command);
 
         controllerFuture.addListener(() -> {
             try {
@@ -161,6 +243,7 @@ public class MainActivity extends Activity {
     }
 
     private void createInterface() {
+
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
         main.setBackgroundColor(SOFT_BG);
@@ -192,8 +275,9 @@ public class MainActivity extends Activity {
         searchBg.setCornerRadius(dp(12));
         search.setBackground(searchBg);
 
-        LinearLayout.LayoutParams searchParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dp(48));
+        LinearLayout.LayoutParams searchParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, dp(48));
         searchParams.setMargins(0, dp(8), 0, dp(7));
         search.setLayoutParams(searchParams);
         main.addView(search);
@@ -219,8 +303,10 @@ public class MainActivity extends Activity {
         miniBg.setCornerRadius(dp(16));
         miniPlayer.setBackground(miniBg);
 
-        LinearLayout.LayoutParams miniParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams miniParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
         miniParams.setMargins(0, dp(7), 0, dp(44));
         miniPlayer.setLayoutParams(miniParams);
 
@@ -259,12 +345,14 @@ public class MainActivity extends Activity {
         playPauseButton = createControlButton("▶", true);
         TextView next = createControlButton("⏭", false);
 
-        LinearLayout.LayoutParams side = new LinearLayout.LayoutParams(dp(56), dp(42));
+        LinearLayout.LayoutParams side =
+                new LinearLayout.LayoutParams(dp(56), dp(42));
         side.setMargins(dp(10), 0, dp(10), 0);
         previous.setLayoutParams(side);
         next.setLayoutParams(new LinearLayout.LayoutParams(side));
 
-        LinearLayout.LayoutParams middle = new LinearLayout.LayoutParams(dp(64), dp(50));
+        LinearLayout.LayoutParams middle =
+                new LinearLayout.LayoutParams(dp(64), dp(50));
         middle.setMargins(dp(12), 0, dp(12), 0);
         playPauseButton.setLayoutParams(middle);
 
@@ -324,56 +412,137 @@ public class MainActivity extends Activity {
         return button;
     }
 
-    private void showRadios(String filter) {
+    private void showRadios(
+            String filter) {
+
         radioList.removeAllViews();
-        String f = filter.toLowerCase().replace("ı", "i");
+
+        String f =
+                filter
+                        .toLowerCase()
+                        .replace("ı", "i");
 
         for (String[] radio : radios) {
-            String name = radio[0];
-            String searchable = name.toLowerCase().replace("ı", "i");
+
+            String name =
+                    radio[0];
+
+            String searchable =
+                    name
+                            .toLowerCase()
+                            .replace("ı", "i");
 
             if (!searchable.contains(f)) {
                 continue;
             }
 
-            createRadioRow(radio[0], radio[1], radio[2]);
+            createRadioRow(
+                    radio[0],
+                    radio[1],
+                    radio[2]
+            );
         }
     }
 
-    private void createRadioRow(String name, String url, String letter) {
+    private void createRadioRow(
+            String name,
+            String url,
+            String letter) {
+
         boolean isCurrent = false;
 
         if (controller != null &&
                 controller.getCurrentMediaItem() != null &&
-                controller.getCurrentMediaItem().mediaMetadata.title != null) {
+                controller
+                        .getCurrentMediaItem()
+                        .mediaMetadata
+                        .title != null) {
 
-            isCurrent = name.equals(controller.getCurrentMediaItem().mediaMetadata.title.toString());
+            isCurrent =
+                    name.equals(
+                            controller
+                                    .getCurrentMediaItem()
+                                    .mediaMetadata
+                                    .title
+                                    .toString()
+                    );
         }
 
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(7), dp(5), dp(5), dp(5));
 
-        GradientDrawable rowBg = new GradientDrawable();
-        rowBg.setColor(Color.WHITE);
-        rowBg.setStroke(dp(isCurrent ? 2 : 1), isCurrent ? RED : Color.rgb(225, 225, 225));
-        rowBg.setCornerRadius(dp(8));
-        row.setBackground(rowBg);
+        LinearLayout row =
+                new LinearLayout(this);
 
-        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dp(58));
-        rowParams.setMargins(0, dp(2), 0, dp(2));
-        row.setLayoutParams(rowParams);
+        row.setOrientation(
+                LinearLayout.HORIZONTAL
+        );
+
+        row.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
+
+        row.setPadding(
+                dp(7),
+                dp(5),
+                dp(5),
+                dp(5)
+        );
+
+
+        GradientDrawable rowBg =
+                new GradientDrawable();
+
+        rowBg.setColor(
+                Color.WHITE
+        );
+
+        rowBg.setStroke(
+                dp(isCurrent ? 2 : 1),
+                isCurrent
+                        ? RED
+                        : Color.rgb(
+                                225,
+                                225,
+                                225
+                        )
+        );
+
+        rowBg.setCornerRadius(
+                dp(8)
+        );
+
+        row.setBackground(
+                rowBg
+        );
+
+
+        LinearLayout.LayoutParams rowParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        dp(58)
+                );
+
+        rowParams.setMargins(
+                0,
+                dp(2),
+                0,
+                dp(2)
+        );
+
+        row.setLayoutParams(
+                rowParams
+        );
+
 
         FrameLayout logoBox = new FrameLayout(this);
+
         GradientDrawable logoBoxBg = new GradientDrawable();
         logoBoxBg.setColor(Color.WHITE);
         logoBoxBg.setStroke(dp(2), RED);
         logoBoxBg.setCornerRadius(dp(7));
         logoBox.setBackground(logoBoxBg);
 
-        LinearLayout.LayoutParams logoParams = new LinearLayout.LayoutParams(dp(43), dp(43));
+        LinearLayout.LayoutParams logoParams =
+                new LinearLayout.LayoutParams(dp(43), dp(43));
         logoBox.setLayoutParams(logoParams);
 
         TextView logoFallback = new TextView(this);
@@ -383,8 +552,10 @@ public class MainActivity extends Activity {
         logoFallback.setTextColor(RED);
         logoFallback.setGravity(Gravity.CENTER);
 
-        FrameLayout.LayoutParams fill = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        FrameLayout.LayoutParams fill =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT);
 
         logoBox.addView(logoFallback, fill);
 
@@ -395,70 +566,206 @@ public class MainActivity extends Activity {
 
         loadStationLogo(name, logoImage);
 
-        LinearLayout center = new LinearLayout(this);
-        center.setOrientation(LinearLayout.VERTICAL);
-        center.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout center =
+                new LinearLayout(this);
 
-        LinearLayout.LayoutParams centerParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
-        centerParams.setMargins(dp(12), 0, dp(5), 0);
-        center.setLayoutParams(centerParams);
+        center.setOrientation(
+                LinearLayout.VERTICAL
+        );
 
-        TextView nameText = new TextView(this);
-        nameText.setText(name);
-        nameText.setTextSize(17);
-        nameText.setTypeface(null, isCurrent ? Typeface.BOLD : Typeface.NORMAL);
-        nameText.setTextColor(isCurrent ? RED : Color.rgb(45, 45, 45));
+        center.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
 
-        center.addView(nameText);
+
+        LinearLayout.LayoutParams centerParams =
+                new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1
+                );
+
+        centerParams.setMargins(
+                dp(12),
+                0,
+                dp(5),
+                0
+        );
+
+        center.setLayoutParams(
+                centerParams
+        );
+
+
+        TextView nameText =
+                new TextView(this);
+
+        nameText.setText(
+                name
+        );
+
+        nameText.setTextSize(
+                17
+        );
+
+        nameText.setTypeface(
+                null,
+                isCurrent
+                        ? Typeface.BOLD
+                        : Typeface.NORMAL
+        );
+
+        nameText.setTextColor(
+                isCurrent
+                        ? RED
+                        : Color.rgb(
+                                45,
+                                45,
+                                45
+                        )
+        );
+
+        center.addView(
+                nameText
+        );
+
 
         if (isCurrent) {
-            TextView playing = new TextView(this);
-            playing.setText("● CANLI");
-            playing.setTextSize(10);
-            playing.setTextColor(RED);
-            center.addView(playing);
+
+            TextView playing =
+                    new TextView(this);
+
+            playing.setText(
+                    "● CANLI"
+            );
+
+            playing.setTextSize(
+                    10
+            );
+
+            playing.setTextColor(
+                    RED
+            );
+
+            center.addView(
+                    playing
+            );
         }
 
-        TextView star = new TextView(this);
-        star.setText(favorites.contains(name) ? "★" : "☆");
-        star.setTextSize(26);
-        star.setTextColor(Color.WHITE);
-        star.setGravity(Gravity.CENTER);
 
-        GradientDrawable starBg = new GradientDrawable();
-        starBg.setColor(favorites.contains(name) ? DARK_RED : RED);
-        starBg.setCornerRadius(dp(6));
-        star.setBackground(starBg);
+        TextView star =
+                new TextView(this);
 
-        LinearLayout.LayoutParams starParams = new LinearLayout.LayoutParams(dp(49), dp(46));
-        star.setLayoutParams(starParams);
+        star.setText(
+                favorites.contains(name)
+                        ? "★"
+                        : "☆"
+        );
+
+        star.setTextSize(
+                26
+        );
+
+        star.setTextColor(
+                Color.WHITE
+        );
+
+        star.setGravity(
+                Gravity.CENTER
+        );
+
+
+        GradientDrawable starBg =
+                new GradientDrawable();
+
+        starBg.setColor(
+                favorites.contains(name)
+                        ? DARK_RED
+                        : RED
+        );
+
+        starBg.setCornerRadius(
+                dp(6)
+        );
+
+        star.setBackground(
+                starBg
+        );
+
+
+        LinearLayout.LayoutParams starParams =
+                new LinearLayout.LayoutParams(
+                        dp(49),
+                        dp(46)
+                );
+
+        star.setLayoutParams(
+                starParams
+        );
+
 
         star.setOnClickListener(v -> {
+
             if (favorites.contains(name)) {
+
                 favorites.remove(name);
                 star.setText("☆");
+
             } else {
+
                 favorites.add(name);
                 star.setText("★");
             }
-            prefs.edit().putStringSet("favorites", new HashSet<>(favorites)).apply();
+
+            prefs.edit()
+                    .putStringSet(
+                            "favorites",
+                            new HashSet<>(
+                                    favorites
+                            )
+                    )
+                    .apply();
         });
 
-        View.OnClickListener play = v -> playStation(name, url);
 
-        row.setOnClickListener(play);
-        logoBox.setOnClickListener(play);
-        center.setOnClickListener(play);
+        View.OnClickListener play =
+                v -> playStation(
+                        name,
+                        url
+                );
 
-        row.addView(logoBox);
-        row.addView(center);
-        row.addView(star);
+        row.setOnClickListener(
+                play
+        );
 
-        radioList.addView(row);
+        logoBox.setOnClickListener(
+                play
+        );
+
+        center.setOnClickListener(
+                play
+        );
+
+
+        row.addView(
+                logoBox
+        );
+
+        row.addView(
+                center
+        );
+
+        row.addView(
+                star
+        );
+
+        radioList.addView(
+                row
+        );
     }
 
     private void playStation(String name, String url) {
+
         if (controller == null) {
             if (liveText != null) liveText.setText("Oynatıcı hazırlanıyor...");
             return;
@@ -473,19 +780,12 @@ public class MainActivity extends Activity {
             MediaMetadata metadata = new MediaMetadata.Builder()
                     .setTitle(radio[0])
                     .setArtist("Candan Radyo")
-                    .setArtworkUri(Uri.parse(getLogoUrl(radio[0])))
                     .build();
 
-            MediaItem.Builder builder = new MediaItem.Builder()
-                    .setMediaId(radio[1])
+            items.add(new MediaItem.Builder()
                     .setUri(radio[1])
-                    .setMediaMetadata(metadata);
-
-            if (radio[1].contains(".m3u8")) {
-                builder.setMimeType(MimeTypes.APPLICATION_M3U8);
-            }
-
-            items.add(builder.build());
+                    .setMediaMetadata(metadata)
+                    .build());
         }
 
         controller.setMediaItems(items, index, 0);
@@ -510,7 +810,8 @@ public class MainActivity extends Activity {
                 controller.getCurrentMediaItem().mediaMetadata.title == null) {
             return -1;
         }
-        return findRadioIndex(controller.getCurrentMediaItem().mediaMetadata.title.toString());
+        return findRadioIndex(
+                controller.getCurrentMediaItem().mediaMetadata.title.toString());
     }
 
     private void playRelative(int direction) {
@@ -526,7 +827,8 @@ public class MainActivity extends Activity {
     }
 
     private void updatePlayerUi() {
-        if (controller == null || stationText == null || liveText == null || playPauseButton == null) return;
+        if (controller == null || stationText == null ||
+                liveText == null || playPauseButton == null) return;
 
         MediaItem current = controller.getCurrentMediaItem();
 
@@ -590,47 +892,41 @@ public class MainActivity extends Activity {
                 return "https://mediacdns.karnaval.com/media/album_media/41616/albumcover_400x400/cover_41616.jpg";
             case "Joy FM":
                 return "https://mediacdns.karnaval.com/media/station_media/3/logos/meta_image.png";
-            case "Virgin Radio":
+            case "Virgin Radio Türkiye":
                 return "https://pbs.twimg.com/profile_images/1125687465266831362/9DtDhuas.png";
             case "Kral Pop":
                 return "https://static-media.streema.com/media/cache/fb/f8/fbf853d0e2981fbf40d4503bb537ba63.png";
             case "Kral FM":
                 return "https://www.dogusgrubu.com.tr/DogusGrubu_Files/202012713129787_kral-fm-logo-01.jpg";
-            case "Power FM":
-                return "https://cdn-profiles.tunein.com/s14259/images/logog.png";
             case "PowerTürk":
                 return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
-            case "Power Pop":
-                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
-            case "Alem FM":
-                return "https://www.google.com/s2/favicons?domain=alemfm.com.tr&sz=256";
-            case "Radyo Spor":
-                return "https://www.google.com/s2/favicons?domain=radyospor.com&sz=256";
-            case "Kafa Radyo":
-                return "https://ik.fskit.net/radyohome/media/station/105/logo_square.png";
+            case "Power FM":
+                return "https://cdn-profiles.tunein.com/s14259/images/logog.png";
             case "Radyo Fenomen":
+            case "Fenomen Pop":
+            case "Fenomen Türk":
+            case "Fenomen Akustik":
                 return "https://cdn.radyofenomen.com/artwork/logo20.png";
-            case "Radyo 45lik":
-                return "https://www.google.com/s2/favicons?domain=radyo45lik.com&sz=256";
-            case "SlowTürk":
-                return "https://www.google.com/s2/favicons?domain=slowturk.com.tr&sz=256";
             case "Best FM":
                 return "https://static-media.streema.com/media/cache/9e/fa/9efa50eb77fd19631846e03fbbed543b.png";
-            case "TRT FM":
-            case "TRT Radyo 1":
-            case "TRT Türkü":
-            case "TRT Nağme":
-                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
-            case "A Haber Radyo":
-                return "https://www.google.com/s2/favicons?domain=ahaber.com.tr&sz=256";
-            case "A Spor Radyo":
-                return "https://www.google.com/s2/favicons?domain=aspor.com.tr&sz=256";
-            case "Radyo Turkuvaz":
-                return "https://www.google.com/s2/favicons?domain=radyoturkuvaz.com.tr&sz=256";
-            case "Lig Radyo":
-                return "https://www.google.com/s2/favicons?domain=ligradyo.com.tr&sz=256";
-            case "Radyo Voyage":
-                return "https://www.google.com/s2/favicons?domain=radyovoyage.com&sz=256";
+            case "Alem FM":
+                return "https://www.google.com/s2/favicons?domain=alemfm.com.tr&sz=256";
+            case "Radyo D":
+                return "https://static2.mytuner.mobi/media/tvos_radios/444/radyo-d.29dd1547.png";
+            case "SlowTürk":
+                return "https://www.google.com/s2/favicons?domain=slowturk.com.tr&sz=256";
+            case "PAL Station":
+                return "https://ik.imagekit.io/eywz9hvpg/pal/media/station/1/logo_square.png";
+            case "PAL FM":
+                return "https://cdn-radiotime-logos.tunein.com/s107895g.png";
+            case "Kafa Radyo":
+                return "https://ik.fskit.net/radyohome/media/station/105/logo_square.png";
+            case "Show Radyo":
+                return "https://cdn-profiles.tunein.com/s341868/images/logog.jpg";
+            case "Radyo Viva":
+                return "https://i.radyoviva.com.tr/images/2025/08/21/viva-rev-logo-beyaz-21082025-kare-1080x1080-min-RM3w71Pu.jpg";
+            case "Radyo 45lik":
+                return "https://www.google.com/s2/favicons?domain=radyo45lik.com&sz=256";
             default:
                 return "";
         }
@@ -659,20 +955,32 @@ public class MainActivity extends Activity {
                     runOnUiThread(() -> imageView.setImageBitmap(bitmap));
                 }
             } catch (Exception ignored) {
+                // Logo gelmezse mevcut harf yedeği görünür.
             }
         }).start();
     }
 
-    private int dp(int value) {
-        return (int) (value * getResources().getDisplayMetrics().density);
+    private int dp(
+            int value) {
+
+        return (int) (
+                value *
+                        getResources()
+                                .getDisplayMetrics()
+                                .density
+        );
     }
 
     @Override
     protected void onDestroy() {
+
         uiHandler.removeCallbacksAndMessages(null);
 
         if (controllerFuture != null) {
-            MediaController.releaseFuture(controllerFuture);
+
+            MediaController.releaseFuture(
+                    controllerFuture
+            );
         }
 
         super.onDestroy();
