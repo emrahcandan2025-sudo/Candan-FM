@@ -5,17 +5,17 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -35,11 +35,11 @@ import androidx.media3.session.SessionToken;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ConcurrentHashMap;
-import java.net.URL;
+import java.util.concurrent.Executor;
 
 public class MainActivity extends Activity {
 
@@ -73,67 +73,46 @@ public class MainActivity extends Activity {
     private final int DARK_RED = Color.rgb(180, 20, 30);
     private final int SOFT_BG = Color.rgb(248, 248, 248);
 
-    // %100 Doğrudan Çalışan Test Edilmiş Akış Adresleri
     private final String[][] radios = {
             {"Süper FM", "https://stream.karnaval.com/superfm.aac", "S"},
             {"Metro FM", "https://stream.karnaval.com/metrofm.aac", "M"},
             {"JoyTürk", "https://stream.karnaval.com/joyturk.aac", "J"},
             {"Joy FM", "https://stream.karnaval.com/joyfm.aac", "J"},
-            {"Virgin Radio Türkiye", "https://stream.karnaval.com/virginradio.aac", "V"},
-            
+            {"Virgin Radio", "https://stream.karnaval.com/virginradio.aac", "V"},
+
             {"Kral Pop", "https://dygmaster.radyotvonline.net/kralpop/playlist.m3u8", "K"},
             {"Kral FM", "https://dygmaster.radyotvonline.net/kralfm/playlist.m3u8", "K"},
             {"Radyo Voyage", "https://dygmaster.radyotvonline.net/voyage/playlist.m3u8", "V"},
-            
-            {"PowerTürk", "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio", "P"},
-            {"Power FM", "https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio", "P"},
-            {"Power Pop", "https://listen.powerapp.com.tr/powerpop/mpeg/icecast.audio", "P"},
-            {"Power Love", "https://listen.powerapp.com.tr/powerlove/mpeg/icecast.audio", "P"},
-            
-            {"Radyo Fenomen", "https://live.radyofenomen.com/fenomen/256/icecast.audio", "F"},
-            {"Best FM", "https://moondigitalmaster.radyotvonline.net/bestfm/playlist.m3u8", "B"},
-            {"Alem FM", "https://turkmedya.radyotvonline.net/alemfmaac", "A"},
-            {"Lig Radyo", "https://turkmedya.radyotvonline.net/ligrfm", "L"},
-            {"Radyo D", "https://moondigitalmaster.radyotvonline.net/radyod/playlist.m3u8", "D"},
-            {"SlowTürk", "https://moondigitalmaster.radyotvonline.net/slowturk/playlist.m3u8", "S"},
-            
-            {"Show Radyo", "https://moondigitalmaster.radyotvonline.net/show/playlist.m3u8", "S"},
-            {"Radyo Viva", "https://moondigitalmaster.radyotvonline.net/viva/playlist.m3u8", "V"},
-            {"Kafa Radyo", "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8", "K"},
+
+            {"Power FM", "https://powerfm.listenpowerapp.com/powerfm/mpeg/icecast.audio", "P"},
+            {"PowerTürk", "https://powerturk.listenpowerapp.com/powerturk/mpeg/icecast.audio", "P"},
+            {"Power Pop", "https://powerpop.listenpowerapp.com/powerpop/mpeg/icecast.audio", "P"},
+
+            {"Alem FM", "https://turkmedya.radyotvonline.com/turkmedya/alemfm.stream/playlist.m3u8", "A"},
+            {"Lig Radyo", "https://turkmedya.radyotvonline.com/turkmedya/ligradyo.stream/playlist.m3u8", "L"},
             {"Radyo Spor", "https://turkmedya.radyotvonline.net/radyospor.stream/playlist.m3u8", "S"},
-            
+            {"Kafa Radyo", "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8", "K"},
+            {"Radyo Fenomen", "https://live.radyofenomen.com/fenomen/256/icecast.audio", "F"},
+            {"Radyo 45lik", "https://moondigitalmaster.radyotvonline.net/radyo45lik/playlist.m3u8", "4"},
+            {"SlowTürk", "https://r3.rocketcdn.com/slowturk/abr/playlist.m3u8", "S"},
+            {"Best FM", "http://37.247.100.100/best/bestfm.stream/playlist.m3u8", "B"},
+
             {"TRT FM", "https://ls-radyo.trt.net.tr/trt-fm/playlist.m3u8", "T"},
             {"TRT Radyo 1", "https://ls-radyo.trt.net.tr/radyo-1/playlist.m3u8", "T"},
-            {"TRT Spor Radyo", "https://ls-radyo.trt.net.tr/trt-spor-radyo/playlist.m3u8", "T"},
             {"TRT Türkü", "https://ls-radyo.trt.net.tr/trt-turku/playlist.m3u8", "T"},
             {"TRT Nağme", "https://ls-radyo.trt.net.tr/trt-nagme/playlist.m3u8", "T"},
-            
+
             {"A Haber Radyo", "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8", "A"},
             {"A Spor Radyo", "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8", "A"},
-            {"Radyo Turkuvaz", "https://trkvz-radyolar.ercdn.net/turkuvazradyo/playlist.m3u8", "T"},
-            {"Vav Radyo", "https://trkvz-radyolar.ercdn.net/vavradyo/playlist.m3u8", "V"},
-            
-            {"Radyo 7", "https://moondigitalmaster2.radyotvonline.net/radyo7/playlist.m3u8", "7"},
-            {"Radyo 45lik", "https://moondigitalmaster.radyotvonline.net/radyo45lik/playlist.m3u8", "4"},
-            {"Radyo Seymen", "https://stream.radyoseymen.com.tr/stream", "S"},
-            {"Radyo Alaturka", "https://stream.radyoalaturka.com.tr/stream", "A"}
+            {"Radyo Turkuvaz", "https://trkvz-radyolar.ercdn.net/turkuvazradyo/playlist.m3u8", "T"}
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        prefs = getSharedPreferences(
-                "candan_radyo",
-                MODE_PRIVATE
-        );
-
-        favorites.addAll(
-                prefs.getStringSet(
-                        "favorites",
-                        new HashSet<>()
-                )
-        );
+        prefs = getSharedPreferences("candan_radyo", MODE_PRIVATE);
+        favorites.addAll(prefs.getStringSet("favorites", new HashSet<>()));
 
         requestNotificationPermission();
         createController();
@@ -148,11 +127,7 @@ public class MainActivity extends Activity {
     }
 
     private void createController() {
-        SessionToken token = new SessionToken(
-                this,
-                new ComponentName(this, RadioService.class)
-        );
-
+        SessionToken token = new SessionToken(this, new ComponentName(this, RadioService.class));
         controllerFuture = new MediaController.Builder(this, token).buildAsync();
         Executor executor = command -> runOnUiThread(command);
 
@@ -216,9 +191,8 @@ public class MainActivity extends Activity {
         searchBg.setCornerRadius(dp(12));
         search.setBackground(searchBg);
 
-        LinearLayout.LayoutParams searchParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, dp(48));
+        LinearLayout.LayoutParams searchParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dp(48));
         searchParams.setMargins(0, dp(8), 0, dp(7));
         search.setLayoutParams(searchParams);
         main.addView(search);
@@ -244,10 +218,8 @@ public class MainActivity extends Activity {
         miniBg.setCornerRadius(dp(16));
         miniPlayer.setBackground(miniBg);
 
-        LinearLayout.LayoutParams miniParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams miniParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         miniParams.setMargins(0, dp(7), 0, dp(44));
         miniPlayer.setLayoutParams(miniParams);
 
@@ -286,14 +258,12 @@ public class MainActivity extends Activity {
         playPauseButton = createControlButton("▶", true);
         TextView next = createControlButton("⏭", false);
 
-        LinearLayout.LayoutParams side =
-                new LinearLayout.LayoutParams(dp(56), dp(42));
+        LinearLayout.LayoutParams side = new LinearLayout.LayoutParams(dp(56), dp(42));
         side.setMargins(dp(10), 0, dp(10), 0);
         previous.setLayoutParams(side);
         next.setLayoutParams(new LinearLayout.LayoutParams(side));
 
-        LinearLayout.LayoutParams middle =
-                new LinearLayout.LayoutParams(dp(64), dp(50));
+        LinearLayout.LayoutParams middle = new LinearLayout.LayoutParams(dp(64), dp(50));
         middle.setMargins(dp(12), 0, dp(12), 0);
         playPauseButton.setLayoutParams(middle);
 
@@ -376,9 +346,7 @@ public class MainActivity extends Activity {
                 controller.getCurrentMediaItem() != null &&
                 controller.getCurrentMediaItem().mediaMetadata.title != null) {
 
-            isCurrent = name.equals(
-                    controller.getCurrentMediaItem().mediaMetadata.title.toString()
-            );
+            isCurrent = name.equals(controller.getCurrentMediaItem().mediaMetadata.title.toString());
         }
 
         LinearLayout row = new LinearLayout(this);
@@ -415,8 +383,7 @@ public class MainActivity extends Activity {
         logoFallback.setGravity(Gravity.CENTER);
 
         FrameLayout.LayoutParams fill = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT);
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 
         logoBox.addView(logoFallback, fill);
 
@@ -536,8 +503,7 @@ public class MainActivity extends Activity {
                 controller.getCurrentMediaItem().mediaMetadata.title == null) {
             return -1;
         }
-        return findRadioIndex(
-                controller.getCurrentMediaItem().mediaMetadata.title.toString());
+        return findRadioIndex(controller.getCurrentMediaItem().mediaMetadata.title.toString());
     }
 
     private void playRelative(int direction) {
@@ -553,8 +519,7 @@ public class MainActivity extends Activity {
     }
 
     private void updatePlayerUi() {
-        if (controller == null || stationText == null ||
-                liveText == null || playPauseButton == null) return;
+        if (controller == null || stationText == null || liveText == null || playPauseButton == null) return;
 
         MediaItem current = controller.getCurrentMediaItem();
 
@@ -618,66 +583,45 @@ public class MainActivity extends Activity {
                 return "https://mediacdns.karnaval.com/media/album_media/41616/albumcover_400x400/cover_41616.jpg";
             case "Joy FM":
                 return "https://mediacdns.karnaval.com/media/station_media/3/logos/meta_image.png";
-            case "Virgin Radio Türkiye":
+            case "Virgin Radio":
                 return "https://pbs.twimg.com/profile_images/1125687465266831362/9DtDhuas.png";
             case "Kral Pop":
                 return "https://static-media.streema.com/media/cache/fb/f8/fbf853d0e2981fbf40d4503bb537ba63.png";
             case "Kral FM":
                 return "https://www.dogusgrubu.com.tr/DogusGrubu_Files/202012713129787_kral-fm-logo-01.jpg";
-            case "PowerTürk":
-                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
             case "Power FM":
                 return "https://cdn-profiles.tunein.com/s14259/images/logog.png";
-            case "Radyo Fenomen":
-                return "https://cdn.radyofenomen.com/artwork/logo20.png";
-            case "Best FM":
-                return "https://static-media.streema.com/media/cache/9e/fa/9efa50eb77fd19631846e03fbbed543b.png";
+            case "PowerTürk":
+                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
+            case "Power Pop":
+                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
             case "Alem FM":
                 return "https://www.google.com/s2/favicons?domain=alemfm.com.tr&sz=256";
-            case "Radyo D":
-                return "https://static2.mytuner.mobi/media/tvos_radios/444/radyo-d.29dd1547.png";
-            case "SlowTürk":
-                return "https://www.google.com/s2/favicons?domain=slowturk.com.tr&sz=256";
+            case "Radyo Spor":
+                return "https://www.google.com/s2/favicons?domain=radyospor.com&sz=256";
             case "Kafa Radyo":
                 return "https://ik.fskit.net/radyohome/media/station/105/logo_square.png";
-            case "Show Radyo":
-                return "https://cdn-profiles.tunein.com/s341868/images/logog.jpg";
-            case "Radyo Viva":
-                return "https://i.radyoviva.com.tr/images/2025/08/21/viva-rev-logo-beyaz-21082025-kare-1080x1080-min-RM3w71Pu.jpg";
+            case "Radyo Fenomen":
+                return "https://cdn.radyofenomen.com/artwork/logo20.png";
             case "Radyo 45lik":
                 return "https://www.google.com/s2/favicons?domain=radyo45lik.com&sz=256";
+            case "SlowTürk":
+                return "https://www.google.com/s2/favicons?domain=slowturk.com.tr&sz=256";
+            case "Best FM":
+                return "https://static-media.streema.com/media/cache/9e/fa/9efa50eb77fd19631846e03fbbed543b.png";
             case "TRT FM":
-                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
             case "TRT Radyo 1":
-                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
-            case "TRT Spor Radyo":
-                return "https://www.google.com/s2/favicons?domain=trtspor.com.tr&sz=256";
             case "TRT Türkü":
-                return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
             case "TRT Nağme":
                 return "https://www.google.com/s2/favicons?domain=trt.net.tr&sz=256";
             case "A Haber Radyo":
                 return "https://www.google.com/s2/favicons?domain=ahaber.com.tr&sz=256";
             case "A Spor Radyo":
                 return "https://www.google.com/s2/favicons?domain=aspor.com.tr&sz=256";
-            case "Radyo 7":
-                return "https://www.google.com/s2/favicons?domain=radyo7.com&sz=256";
-            case "Radyo Seymen":
-                return "https://www.google.com/s2/favicons?domain=radyoseymen.com.tr&sz=256";
-            case "Power Pop":
-                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
-            case "Power Love":
-                return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
             case "Radyo Turkuvaz":
                 return "https://www.google.com/s2/favicons?domain=radyoturkuvaz.com.tr&sz=256";
-            case "Vav Radyo":
-                return "https://www.google.com/s2/favicons?domain=vavradyo.com.tr&sz=256";
             case "Lig Radyo":
                 return "https://www.google.com/s2/favicons?domain=ligradyo.com.tr&sz=256";
-            case "Radyo Alaturka":
-                return "https://www.google.com/s2/favicons?domain=radyoalaturka.com.tr&sz=256";
-            case "Radyo Spor":
-                return "https://www.google.com/s2/favicons?domain=radyospor.com&sz=256";
             case "Radyo Voyage":
                 return "https://www.google.com/s2/favicons?domain=radyovoyage.com&sz=256";
             default:
