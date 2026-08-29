@@ -1,6 +1,5 @@
 package com.candan.radyo;
 
-import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
@@ -22,12 +21,11 @@ public class RadioService extends MediaSessionService {
     public void onCreate() {
         super.onCreate();
 
-        // Karnaval, Power ve Doğuş sunucularının HTTP 403 vermesini önleyen tarayıcı kimliği
         DefaultHttpDataSource.Factory httpDataSourceFactory = new DefaultHttpDataSource.Factory()
-                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
                 .setAllowCrossProtocolRedirects(true)
-                .setConnectTimeoutMs(15000)
-                .setReadTimeoutMs(15000);
+                .setConnectTimeoutMs(20000)
+                .setReadTimeoutMs(20000);
 
         DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(this, httpDataSourceFactory);
 
