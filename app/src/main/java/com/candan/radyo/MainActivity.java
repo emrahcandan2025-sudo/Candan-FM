@@ -80,21 +80,21 @@ public class MainActivity extends Activity {
             {"Joy FM", "https://stream.karnaval.com/joyfm.aac", "J"},
             {"Virgin Radio", "https://stream.karnaval.com/virginradio.aac", "V"},
 
-            {"Kral Pop", "https://dygmaster.radyotvonline.net/kralpop/playlist.m3u8", "K"},
-            {"Kral FM", "https://dygmaster.radyotvonline.net/kralfm/playlist.m3u8", "K"},
-            {"Radyo Voyage", "https://dygmaster.radyotvonline.net/voyage/playlist.m3u8", "V"},
+            {"Kral FM", "https://ssli.kralfm.com.tr/kralfm/kralfm.stream/playlist.m3u8", "K"},
+            {"Kral Pop", "https://ssli.kralpop.com.tr/kralpop/kralpop.stream/playlist.m3u8", "K"},
+            {"Radyo Voyage", "https://ssli.radyovoyage.com.tr/voyage/voyage.stream/playlist.m3u8", "V"},
 
             {"Power FM", "https://powerfm.listenpowerapp.com/powerfm/mpeg/icecast.audio", "P"},
             {"PowerTürk", "https://powerturk.listenpowerapp.com/powerturk/mpeg/icecast.audio", "P"},
             {"Power Pop", "https://powerpop.listenpowerapp.com/powerpop/mpeg/icecast.audio", "P"},
 
+            {"SlowTürk", "https://r3.rocketcdn.com/slowturk/abr/playlist.m3u8", "S"},
+            {"Radyo Fenomen", "https://live.radyofenomen.com/fenomen/256/icecast.audio", "F"},
             {"Alem FM", "https://turkmedya.radyotvonline.com/turkmedya/alemfm.stream/playlist.m3u8", "A"},
             {"Lig Radyo", "https://turkmedya.radyotvonline.com/turkmedya/ligradyo.stream/playlist.m3u8", "L"},
             {"Radyo Spor", "https://turkmedya.radyotvonline.net/radyospor.stream/playlist.m3u8", "S"},
             {"Kafa Radyo", "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8", "K"},
-            {"Radyo Fenomen", "https://live.radyofenomen.com/fenomen/256/icecast.audio", "F"},
             {"Radyo 45lik", "https://moondigitalmaster.radyotvonline.net/radyo45lik/playlist.m3u8", "4"},
-            {"SlowTürk", "https://r3.rocketcdn.com/slowturk/abr/playlist.m3u8", "S"},
             {"Best FM", "http://37.247.100.100/best/bestfm.stream/playlist.m3u8", "B"},
 
             {"TRT FM", "https://ls-radyo.trt.net.tr/trt-fm/playlist.m3u8", "T"},
