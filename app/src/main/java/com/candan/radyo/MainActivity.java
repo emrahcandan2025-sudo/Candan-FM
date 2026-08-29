@@ -74,166 +74,48 @@ public class MainActivity extends Activity {
     private final int SOFT_BG = Color.rgb(248, 248, 248);
 
     private final String[][] radios = {
-
-            {"Süper FM",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM128AAC_SC",
-                    "S"},
-
-            {"Metro FM",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM128AAC_SC",
-                    "M"},
-
-            {"JoyTürk",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURKAAC_SC",
-                    "J"},
-
-            {"Joy FM",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM128AAC_SC",
-                    "J"},
-
-            {"Virgin Radio Türkiye",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIOAAC_SC",
-                    "V"},
-
-            {"Kral Pop",
-                    "https://dygedge.radyotvonline.net/kralpop/playlist.m3u8",
-                    "K"},
-
-            {"Kral FM",
-                    "https://dygedge2.radyotvonline.net/kralfm/playlist.m3u8",
-                    "K"},
-
-            {"PowerTürk",
-                    "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio",
-                    "P"},
-
-            {"Power FM",
-                    "https://listen.powerapp.com.tr/powerfm/256/chunks.m3u8",
-                    "P"},
-
-            {"Radyo Fenomen",
-                    "https://live.radyofenomen.com/fenomen/256/icecast.audio",
-                    "F"},
-
-            {"Best FM",
-                    "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
-                    "B"},
-
-            {"Alem FM",
-                    "https://turkmedya.radyotvonline.net/alemfmaac",
-                    "A"},
-
-            {"Radyo D",
-                    "https://moondigitaledge2.radyotvonline.net/radyod/playlist.m3u8",
-                    "D"},
-
-            {"SlowTürk",
-                    "https://radyo.duhnet.tv/slowturk",
-                    "S"},
-
-            {"PAL Station",
-                    "http://shoutcast.radyogrup.com:1020/",
-                    "P"},
-
-            {"PAL FM",
-                    "http://shoutcast.radyogrup.com:1030/",
-                    "P"},
-
-            {"Kafa Radyo",
-                    "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8",
-                    "K"},
-
-            {"Show Radyo",
-                    "http://46.20.3.229/",
-                    "S"},
-
-            {"Radyo Viva",
-                    "http://46.20.3.231/",
-                    "V"},
-
-            {"Radyo 45lik",
-                    "https://stream.radyo45lik.com:4545/",
-                    "4"},
-
-            {"TRT FM",
-                    "https://radio-trtfm.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Radyo 1",
-                    "https://radio-trtradyo1.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Spor Radyo",
-                    "https://radio-trtspor.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Türkü",
-                    "https://radio-trtturku.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"TRT Nağme",
-                    "https://radio-trtnagme.live.trt.com.tr/master.m3u8",
-                    "T"},
-
-            {"A Haber Radyo",
-                    "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8",
-                    "A"},
-
-            {"A Spor Radyo",
-                    "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8",
-                    "A"},
-
-            {"Radyo 7",
-                    "https://kanal7.radyotvonline.net/radyo7/playlist.m3u8",
-                    "7"},
-
-            {"Number One FM",
-                    "https://20043.live.streamtheworld.com/NUMBER1FMAAC.aac",
-                    "N"},
-
-            {"Number One Türk",
-                    "https://19643.live.streamtheworld.com/NUMBER1TURK_FMAAC.aac",
-                    "N"},
-
-            {"Radyo Seymen",
-                    "https://stream.radyoseymen.com.tr/stream",
-                    "S"},
-
-            {"Power Pop",
-                    "https://listen.powerapp.com.tr/powerpop/mpeg/icecast.audio",
-                    "P"},
-
-            {"Power Love",
-                    "https://listen.powerapp.com.tr/powerlove/mpeg/icecast.audio",
-                    "P"},
-
-            {"Joy FM Akustik",
-                    "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_AKUSTIKAAC_SC",
-                    "J"},
-
-            {"Radyo Turkuvaz",
-                    "https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8",
-                    "T"},
-
-            {"Vav Radyo",
-                    "https://trkvz-radyolar.ercdn.net/vavradyo/playlist.m3u8",
-                    "V"},
-
-            {"Lig Radyo",
-                    "https://turkmedya.radyotvonline.net/ligrfm",
-                    "L"},
-
-            {"Radyo Alaturka",
-                    "https://stream.radyoalaturka.com.tr/stream",
-                    "A"},
-
-            {"Radyo Spor",
-                    "https://ssldyg.radyotvonline.com/radyospor/playlist.m3u8",
-                    "S"},
-
-            {"Radyo Voyage",
-                    "https://dygedge.radyotvonline.net/voyage/playlist.m3u8",
-                    "V"}
+            {"Süper FM", "https://stream.karnaval.com/superfm.aac", "S"},
+            {"Metro FM", "https://stream.karnaval.com/metrofm.aac", "M"},
+            {"JoyTürk", "https://stream.karnaval.com/joyturk.aac", "J"},
+            {"Joy FM", "https://stream.karnaval.com/joyfm.aac", "J"},
+            {"Virgin Radio Türkiye", "https://stream.karnaval.com/virginradio.aac", "V"},
+            
+            {"Kral Pop", "https://dygmaster.radyotvonline.net/kralpop/playlist.m3u8", "K"},
+            {"Kral FM", "https://dygmaster.radyotvonline.net/kralfm/playlist.m3u8", "K"},
+            {"Radyo Voyage", "https://dygmaster.radyotvonline.net/voyage/playlist.m3u8", "V"},
+            
+            {"PowerTürk", "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio", "P"},
+            {"Power FM", "https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio", "P"},
+            {"Power Pop", "https://listen.powerapp.com.tr/powerpop/mpeg/icecast.audio", "P"},
+            {"Power Love", "https://listen.powerapp.com.tr/powerlove/mpeg/icecast.audio", "P"},
+            
+            {"Radyo Fenomen", "https://live.radyofenomen.com/fenomen/256/icecast.audio", "F"},
+            {"Best FM", "https://moondigitalmaster.radyotvonline.net/bestfm/playlist.m3u8", "B"},
+            {"Alem FM", "https://turkmedya.radyotvonline.net/alemfmaac", "A"},
+            {"Lig Radyo", "https://turkmedya.radyotvonline.net/ligrfm", "L"},
+            {"Radyo D", "https://moondigitalmaster.radyotvonline.net/radyod/playlist.m3u8", "D"},
+            {"SlowTürk", "https://moondigitalmaster.radyotvonline.net/slowturk/playlist.m3u8", "S"},
+            
+            {"Show Radyo", "https://moondigitalmaster.radyotvonline.net/show/playlist.m3u8", "S"},
+            {"Radyo Viva", "https://moondigitalmaster.radyotvonline.net/viva/playlist.m3u8", "V"},
+            {"Kafa Radyo", "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8", "K"},
+            {"Radyo Spor", "https://moondigitalmaster.radyotvonline.net/radyospor/playlist.m3u8", "S"},
+            
+            {"TRT FM", "https://rd-trtfm.medya.trt.com.tr/master.m3u8", "T"},
+            {"TRT Radyo 1", "https://rd-trtradyo1.medya.trt.com.tr/master.m3u8", "T"},
+            {"TRT Spor Radyo", "https://rd-trtspor.medya.trt.com.tr/master.m3u8", "T"},
+            {"TRT Türkü", "https://rd-trtturku.medya.trt.com.tr/master.m3u8", "T"},
+            {"TRT Nağme", "https://rd-trtnagme.medya.trt.com.tr/master.m3u8", "T"},
+            
+            {"A Haber Radyo", "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8", "A"},
+            {"A Spor Radyo", "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8", "A"},
+            {"Radyo Turkuvaz", "https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8", "T"},
+            {"Vav Radyo", "https://trkvz-radyolar.ercdn.net/vavradyo/playlist.m3u8", "V"},
+            
+            {"Radyo 7", "https://moondigitalmaster2.radyotvonline.net/radyo7/playlist.m3u8", "7"},
+            {"Radyo 45lik", "https://stream.radyo45lik.com:4545/", "4"},
+            {"Radyo Seymen", "https://stream.radyoseymen.com.tr/stream", "S"},
+            {"Radyo Alaturka", "https://stream.radyoalaturka.com.tr/stream", "A"}
     };
 
     @Override
@@ -258,23 +140,13 @@ public class MainActivity extends Activity {
     }
 
     private void requestNotificationPermission() {
-
         if (Build.VERSION.SDK_INT >= 33 &&
-                checkSelfPermission(
-                        Manifest.permission.POST_NOTIFICATIONS)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(
-                    new String[]{
-                            Manifest.permission.POST_NOTIFICATIONS
-                    },
-                    100
-            );
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 100);
         }
     }
 
     private void createController() {
-
         SessionToken token = new SessionToken(
                 this,
                 new ComponentName(this, RadioService.class)
@@ -312,7 +184,6 @@ public class MainActivity extends Activity {
     }
 
     private void createInterface() {
-
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
         main.setBackgroundColor(SOFT_BG);
@@ -482,13 +353,10 @@ public class MainActivity extends Activity {
     }
 
     private void showRadios(String filter) {
-
         radioList.removeAllViews();
-
         String f = filter.toLowerCase().replace("ı", "i");
 
         for (String[] radio : radios) {
-
             String name = radio[0];
             String searchable = name.toLowerCase().replace("ı", "i");
 
@@ -501,7 +369,6 @@ public class MainActivity extends Activity {
     }
 
     private void createRadioRow(String name, String url, String letter) {
-
         boolean isCurrent = false;
 
         if (controller != null &&
@@ -623,7 +490,6 @@ public class MainActivity extends Activity {
     }
 
     private void playStation(String name, String url) {
-
         if (controller == null) {
             if (liveText != null) liveText.setText("Oynatıcı hazırlanıyor...");
             return;
@@ -771,10 +637,6 @@ public class MainActivity extends Activity {
                 return "https://static2.mytuner.mobi/media/tvos_radios/444/radyo-d.29dd1547.png";
             case "SlowTürk":
                 return "https://www.google.com/s2/favicons?domain=slowturk.com.tr&sz=256";
-            case "PAL Station":
-                return "https://ik.imagekit.io/eywz9hvpg/pal/media/station/1/logo_square.png";
-            case "PAL FM":
-                return "https://cdn-radiotime-logos.tunein.com/s107895g.png";
             case "Kafa Radyo":
                 return "https://ik.fskit.net/radyohome/media/station/105/logo_square.png";
             case "Show Radyo":
@@ -799,18 +661,12 @@ public class MainActivity extends Activity {
                 return "https://www.google.com/s2/favicons?domain=aspor.com.tr&sz=256";
             case "Radyo 7":
                 return "https://www.google.com/s2/favicons?domain=radyo7.com&sz=256";
-            case "Number One FM":
-                return "https://www.google.com/s2/favicons?domain=numberone.com.tr&sz=256";
-            case "Number One Türk":
-                return "https://www.google.com/s2/favicons?domain=numberone.com.tr&sz=256";
             case "Radyo Seymen":
                 return "https://www.google.com/s2/favicons?domain=radyoseymen.com.tr&sz=256";
             case "Power Pop":
                 return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
             case "Power Love":
                 return "https://www.google.com/s2/favicons?domain=powerapp.com.tr&sz=256";
-            case "Joy FM Akustik":
-                return "https://mediacdns.karnaval.com/media/station_media/3/logos/meta_image.png";
             case "Radyo Turkuvaz":
                 return "https://www.google.com/s2/favicons?domain=radyoturkuvaz.com.tr&sz=256";
             case "Vav Radyo":
